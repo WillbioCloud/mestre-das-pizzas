@@ -1,3 +1,17 @@
+/* --- Agendamento da Pizza do Dia (0 = Domingo, 1 = Segunda...) --- */
+// Usamos os IDs das pizzas que já existem no MENU_ITEMS
+const PROMO_SCHEDULE = {
+    0: 'mussarela',         // Domingo
+    1: 'calabresa',         // Segunda
+    2: 'frango-catupiry',   // Terça
+    3: 'portuguesa',        // Quarta
+    4: 'quatro-queijos',    // Quinta
+    5: 'bacon',             // Sexta
+    6: 'moda-casa'          // Sábado
+};
+
+const DAYS_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
 /**
  * DADOS DO CARDÁPIO (MOCK DATA)
  */
@@ -227,7 +241,23 @@ const app = {
         this.loadCart();
         this.renderHome();
         this.renderMenu();
-        lucide.createIcons(); // Inicializa os ícones
+        this.initParallax(); // <--- Nova chamada
+        lucide.createIcons();
+    },
+
+    // --- PARALLAX EFFECT ---
+    initParallax: function() {
+        window.addEventListener('scroll', () => {
+            const heroWrapper = document.querySelector('.hero-video-wrapper');
+            if (!heroWrapper) return;
+
+            const scrolled = window.pageYOffset;
+            // Só aplica o efeito se estamos perto do topo para economizar processamento
+            if (scrolled < window.innerHeight) {
+                // Move o vídeo na metade da velocidade da rolagem (0.5)
+                heroWrapper.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
     },
 
     // --- NAVEGAÇÃO ---
@@ -263,6 +293,17 @@ const app = {
 
     // --- RENDERIZAÇÃO DE PRODUTOS ---
     createProductCard: function(product) {
+        // Verifica se é o card especial da "Promoção do Dia"
+        const isPromoCard = product.id === 'promo-dia';
+        
+        // Define a ação do botão: abrir modal ou adicionar ao carrinho
+        const buttonAction = isPromoCard 
+            ? `app.openPromoModal()` 
+            : `app.addToCart('${product.id}')`;
+            
+        const buttonText = isPromoCard ? 'Ver Dia' : 'Adicionar';
+        const buttonIcon = isPromoCard ? 'calendar' : 'plus';
+
         return `
             <div class="product-card">
                 <div class="card-img-wrapper">
@@ -274,8 +315,8 @@ const app = {
                     <p class="card-desc">${product.description}</p>
                     <div class="card-footer">
                         <span class="card-price">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                        <button onclick="app.addToCart('${product.id}')" class="btn-add">
-                            Adicionar <i data-lucide="plus" width="16"></i>
+                        <button onclick="${buttonAction}" class="btn-add">
+                            ${buttonText} <i data-lucide="${buttonIcon}" width="16"></i>
                         </button>
                     </div>
                 </div>
@@ -338,6 +379,82 @@ const app = {
         else if(activeCategory.includes('bebidas')) catId = 'bebidas';
 
         this.renderMenu(catId, term);
+    },
+
+    // --- LÓGICA DA PROMOÇÃO DO DIA ---
+    
+    openPromoModal: function() {
+        const modal = document.getElementById('promo-modal');
+        modal.classList.remove('hidden');
+        
+        // Pega o dia de hoje (0-6)
+        const todayIndex = new Date().getDay();
+        
+        // Renderiza a barra de dias e seleciona hoje por padrão
+        this.renderWeekDays(todayIndex);
+        this.selectPromoDay(todayIndex);
+        lucide.createIcons();
+    },
+
+    closePromoModal: function() {
+        document.getElementById('promo-modal').classList.add('hidden');
+    },
+
+    renderWeekDays: function(activeDayIndex) {
+        const container = document.getElementById('week-days-container');
+        container.innerHTML = DAYS_LABELS.map((label, index) => {
+            const isActive = index === activeDayIndex ? 'active' : '';
+            return `
+                <button class="day-btn ${isActive}" onclick="app.selectPromoDay(${index})">
+                    ${label}
+                    ${index === new Date().getDay() ? '<span>Hoje</span>' : '<span>&nbsp;</span>'}
+                </button>
+            `;
+        }).join('');
+    },
+
+    selectPromoDay: function(dayIndex) {
+        // Atualiza estilo dos botões
+        document.querySelectorAll('.day-btn').forEach((btn, idx) => {
+            if(idx === dayIndex) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+
+        // Busca o ID da pizza do dia no agendamento
+        const pizzaId = PROMO_SCHEDULE[dayIndex];
+        const product = MENU_ITEMS.find(p => p.id === pizzaId);
+
+        if(!product) return;
+
+        const display = document.getElementById('promo-pizza-display');
+        display.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" class="promo-img">
+            <h4 class="promo-title">${product.name}</h4>
+            <p class="promo-desc">${product.description}</p>
+            <button onclick="app.addPromoToCart('${product.id}')" class="btn btn-success full-width">
+                Pedir Promoção do Dia - R$ 42,00
+            </button>
+        `;
+    },
+
+    addPromoToCart: function(originalProductId) {
+        const product = MENU_ITEMS.find(p => p.id === originalProductId);
+        if (!product) return;
+
+        // Adiciona ao carrinho com preço modificado e observação automática
+        const internalId = Date.now().toString();
+        this.cart.push({
+            ...product,
+            internalId: internalId,
+            price: 42.00, // Preço fixo da promoção
+            quantity: 1,
+            observation: 'PROMOÇÃO DO DIA'
+        });
+
+        this.saveCart();
+        this.closePromoModal();
+        this.toggleCart(); // Abre o carrinho para confirmar
+        this.updateCartUI();
     },
 
     // --- CARRINHO ---
