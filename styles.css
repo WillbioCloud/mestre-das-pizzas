@@ -1,6 +1,6 @@
 /* --- Variáveis e Reset --- */
 :root {
-    /* ... suas variáveis ... */
+    /* ... mantenha suas variáveis de cor aqui ... */
     --color-red: #9A2A2A;
     --color-brown: #3E2723;
     --color-cream: #FFF8E7;
@@ -19,24 +19,40 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ATUALIZADO: Configuração para Sticky Footer */
+/* FIX DEFINITIVO PARA O ESPAÇO BRANCO */
+html {
+    height: 100%;
+    /* Define a cor de fundo do HTML como a cor do Footer (marrom) 
+       Isso "esconde" o branco no efeito elástico do mobile lá embaixo */
+    background-color: var(--color-brown); 
+}
+
 body {
-    background-color: var(--color-cream);
+    background-color: var(--color-cream); /* O corpo continua creme */
     color: var(--color-brown);
     font-family: var(--font-sans);
     line-height: 1.6;
     
-    /* Estas 3 linhas corrigem o espaço em branco abaixo do footer */
+    /* Altura mínima robusta para mobile e desktop */
+    min-height: 100%;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic Viewport Height: ignora a barra do navegador mobile */
+    
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Evita rolagem lateral acidental */
+}
+
+/* Garante que o conteúdo empurre o footer */
+#main-content {
+    flex: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-/* NOVO: Faz o conteúdo principal empurrar o footer para baixo */
-#main-content {
-    flex: 1;
-    width: 100%; /* Garante largura total */
-}
+h1, h2, h3 { font-family: var(--font-serif); }
+/* ... restante do CSS continua igual ... */
 
 h1, h2, h3 { font-family: var(--font-serif); }
 a { text-decoration: none; color: inherit; transition: 0.3s; }
