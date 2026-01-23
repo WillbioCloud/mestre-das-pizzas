@@ -228,20 +228,24 @@ const MENU_ITEMS = [
     },
 ];
 
-const WHATSAPP_NUMBER = "5564999999999"; // Substitua pelo seu número real
+const WHATSAPP_NUMBER = "5564999232217"; // Substitua pelo seu número real
 
 /**
  * APLICAÇÃO PRINCIPAL
  */
 const app = {
     cart: [],
+    currentLocationLink: null,
+    mapInstance: null,
+    selectedLat: null,
+    selectedLng: null,
     
     // Inicialização
     init: function() {
         this.loadCart();
         this.renderHome();
         this.renderMenu();
-        this.initParallax(); // <--- Nova chamada
+        this.initParallax();
         lucide.createIcons();
     },
 
@@ -252,9 +256,7 @@ const app = {
             if (!heroWrapper) return;
 
             const scrolled = window.pageYOffset;
-            // Só aplica o efeito se estamos perto do topo para economizar processamento
             if (scrolled < window.innerHeight) {
-                // Move o vídeo na metade da velocidade da rolagem (0.5)
                 heroWrapper.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
@@ -262,22 +264,16 @@ const app = {
 
     // --- NAVEGAÇÃO ---
     navigate: function(pageId) {
-        // Esconde todas as seções
         document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
         
-        // Mostra a selecionada
         const target = document.getElementById(`page-${pageId}`);
         if(target) target.classList.remove('hidden');
 
-        // Atualiza menu ativo
         const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
         if(navLink) navLink.classList.add('active');
 
-        // Fecha menu mobile se aberto
         document.getElementById('mobile-menu').classList.add('hidden');
-
-        // Scroll para o topo
         window.scrollTo(0,0);
         lucide.createIcons();
     },
@@ -293,14 +289,8 @@ const app = {
 
     // --- RENDERIZAÇÃO DE PRODUTOS ---
     createProductCard: function(product) {
-        // Verifica se é o card especial da "Promoção do Dia"
         const isPromoCard = product.id === 'promo-dia';
-        
-        // Define a ação do botão: abrir modal ou adicionar ao carrinho
-        const buttonAction = isPromoCard 
-            ? `app.openPromoModal()` 
-            : `app.addToCart('${product.id}')`;
-            
+        const buttonAction = isPromoCard ? `app.openPromoModal()` : `app.addToCart('${product.id}')`;
         const buttonText = isPromoCard ? 'Ver Dia' : 'Adicionar';
         const buttonIcon = isPromoCard ? 'calendar' : 'plus';
 
@@ -327,43 +317,28 @@ const app = {
     renderHome: function() {
         const combos = MENU_ITEMS.filter(i => i.category === 'combos');
         const highlights = MENU_ITEMS.filter(i => i.category === 'tradicionais').slice(0, 4);
-
         document.getElementById('home-combos-grid').innerHTML = combos.map(this.createProductCard).join('');
         document.getElementById('home-highlights-grid').innerHTML = highlights.map(this.createProductCard).join('');
     },
 
     renderMenu: function(filter = 'todos', searchTerm = '') {
         let items = MENU_ITEMS;
-
-        // Filtra por categoria
-        if (filter !== 'todos') {
-            items = items.filter(i => i.category === filter);
-        }
-
-        // Filtra por busca
+        if (filter !== 'todos') items = items.filter(i => i.category === filter);
         if (searchTerm) {
             const lowerTerm = searchTerm.toLowerCase();
-            items = items.filter(i => 
-                i.name.toLowerCase().includes(lowerTerm) || 
-                i.description.toLowerCase().includes(lowerTerm)
-            );
+            items = items.filter(i => i.name.toLowerCase().includes(lowerTerm) || i.description.toLowerCase().includes(lowerTerm));
         }
 
         const grid = document.getElementById('menu-grid');
-        if (items.length === 0) {
-            grid.innerHTML = '<p class="text-center col-span-full">Nenhum item encontrado.</p>';
-        } else {
-            grid.innerHTML = items.map(this.createProductCard).join('');
-        }
+        grid.innerHTML = items.length === 0 
+            ? '<p class="text-center col-span-full">Nenhum item encontrado.</p>' 
+            : items.map(this.createProductCard).join('');
         lucide.createIcons();
     },
 
     filterMenu: function(category, btnElement) {
-        // Atualiza botões
         document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
         btnElement.classList.add('active');
-        
-        // Pega valor da busca atual
         const searchTerm = document.getElementById('search-input').value;
         this.renderMenu(category, searchTerm);
     },
@@ -371,26 +346,19 @@ const app = {
     searchMenu: function(term) {
         const activeCatBtn = document.querySelector('.cat-btn.active');
         const activeCategory = activeCatBtn ? activeCatBtn.innerText.toLowerCase() : 'todos';
-        // Mapeia texto do botão para ID da categoria (simplificado)
         let catId = 'todos';
         if(activeCategory.includes('combos')) catId = 'combos';
         else if(activeCategory.includes('tradicionais')) catId = 'tradicionais';
         else if(activeCategory.includes('doces')) catId = 'doces';
         else if(activeCategory.includes('bebidas')) catId = 'bebidas';
-
         this.renderMenu(catId, term);
     },
 
-    // --- LÓGICA DA PROMOÇÃO DO DIA ---
-    
+    // --- PROMOÇÃO DO DIA ---
     openPromoModal: function() {
         const modal = document.getElementById('promo-modal');
         modal.classList.remove('hidden');
-        
-        // Pega o dia de hoje (0-6)
         const todayIndex = new Date().getDay();
-        
-        // Renderiza a barra de dias e seleciona hoje por padrão
         this.renderWeekDays(todayIndex);
         this.selectPromoDay(todayIndex);
         lucide.createIcons();
@@ -414,18 +382,13 @@ const app = {
     },
 
     selectPromoDay: function(dayIndex) {
-        // Atualiza estilo dos botões
         document.querySelectorAll('.day-btn').forEach((btn, idx) => {
             if(idx === dayIndex) btn.classList.add('active');
             else btn.classList.remove('active');
         });
-
-        // Busca o ID da pizza do dia no agendamento
         const pizzaId = PROMO_SCHEDULE[dayIndex];
         const product = MENU_ITEMS.find(p => p.id === pizzaId);
-
         if(!product) return;
-
         const display = document.getElementById('promo-pizza-display');
         display.innerHTML = `
             <img src="${product.image}" alt="${product.name}" class="promo-img">
@@ -440,24 +403,238 @@ const app = {
     addPromoToCart: function(originalProductId) {
         const product = MENU_ITEMS.find(p => p.id === originalProductId);
         if (!product) return;
-
-        // Adiciona ao carrinho com preço modificado e observação automática
         const internalId = Date.now().toString();
         this.cart.push({
             ...product,
             internalId: internalId,
-            price: 42.00, // Preço fixo da promoção
+            price: 42.00,
             quantity: 1,
             observation: 'PROMOÇÃO DO DIA'
         });
-
         this.saveCart();
         this.closePromoModal();
-        this.toggleCart(); // Abre o carrinho para confirmar
+        this.toggleCart();
         this.updateCartUI();
     },
 
-    // --- CARRINHO ---
+    // --- ENDEREÇO & MAPA ---
+
+    fetchAddressByCep: function() {
+        const cepInput = document.getElementById('cust-cep');
+        const statusIcon = document.getElementById('cep-status-icon');
+        const cep = cepInput.value.replace(/\D/g, '');
+
+        if (cep.length !== 8) {
+            statusIcon.innerHTML = '<i data-lucide="search" width="18"></i>';
+            statusIcon.className = 'status-badge';
+            lucide.createIcons();
+            return; 
+        }
+
+        statusIcon.innerHTML = '<i data-lucide="loader-2" width="18"></i>';
+        statusIcon.classList.add('spin-animate');
+        cepInput.style.opacity = '0.7';
+        lucide.createIcons();
+
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                cepInput.style.opacity = '1';
+                statusIcon.classList.remove('spin-animate');
+
+                if (!data.erro) {
+                    statusIcon.innerHTML = '<i data-lucide="check-circle" width="18"></i>';
+                    statusIcon.classList.add('success');
+                    statusIcon.classList.remove('error');
+
+                    document.getElementById('cust-street').value = data.logradouro;
+                    document.getElementById('cust-district').value = data.bairro;
+                    document.getElementById('cust-city').value = `${data.localidade} - ${data.uf}`;
+                    document.getElementById('cust-number').focus();
+                } else {
+                    statusIcon.innerHTML = '<i data-lucide="x-circle" width="18"></i>';
+                    statusIcon.classList.add('error');
+                    statusIcon.classList.remove('success');
+                    alert('CEP não encontrado.');
+                }
+                lucide.createIcons();
+            })
+            .catch(err => {
+                cepInput.style.opacity = '1';
+                statusIcon.classList.remove('spin-animate');
+                statusIcon.innerHTML = '<i data-lucide="alert-circle" width="18"></i>';
+                statusIcon.classList.add('error');
+                lucide.createIcons();
+            });
+    },
+
+    // --- MAPA MANUAL (Com Autolocalização) ---
+
+    openMapModal: function() {
+        const modal = document.getElementById('map-modal');
+        modal.classList.remove('hidden');
+
+        // Se o mapa ainda não foi criado, cria agora
+        if (!this.mapInstance) {
+            // Posição inicial padrão (Caldas Novas) caso o GPS falhe
+            const defaultLat = -17.74; 
+            const defaultLng = -48.62;
+
+            this.mapInstance = L.map('map-container', {
+                zoomControl: false 
+            }).setView([defaultLat, defaultLng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(this.mapInstance);
+
+            // Eventos visuais do pino fixo
+            this.mapInstance.on('movestart', () => {
+                const pin = document.querySelector('.center-pin');
+                if(pin) pin.classList.add('map-moving');
+            });
+
+            this.mapInstance.on('moveend', () => {
+                const pin = document.querySelector('.center-pin');
+                if(pin) pin.classList.remove('map-moving');
+            });
+        }
+        
+        // Timeout para corrigir renderização no modal
+        setTimeout(() => {
+            this.mapInstance.invalidateSize();
+            // CHAMA A BUSCA AUTOMÁTICA SEMPRE QUE ABRIR
+            this.detectInitialLocation();
+        }, 300);
+    },
+
+    detectInitialLocation: function() {
+        // Se não tiver suporte, só ignora
+        if (!navigator.geolocation) return;
+
+        // Tenta pegar a posição com alta precisão
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                // Move o mapa suavemente até o usuário
+                if(this.mapInstance) {
+                    this.mapInstance.flyTo([latitude, longitude], 17, {
+                        animate: true,
+                        duration: 1.5
+                    });
+                }
+            },
+            (err) => {
+                console.log("GPS não autorizado ou indisponível:", err);
+                // Não fazemos nada, o mapa fica na posição padrão e o usuário move manualmente
+            },
+            { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+        );
+    },
+
+    closeMapModal: function() {
+        document.getElementById('map-modal').classList.add('hidden');
+    },
+
+    confirmMapLocation: function() {
+        if (!this.mapInstance) return;
+
+        // PEGA O CENTRO DO MAPA
+        const center = this.mapInstance.getCenter();
+        const lat = center.lat;
+        const lng = center.lng;
+
+        // Salva nas variáveis
+        this.selectedLat = lat;
+        this.selectedLng = lng;
+
+        // --- CORREÇÃO AQUI: Link oficial do Google Maps ---
+        this.currentLocationLink = `https://maps.google.com/?q=${lat},${lng}&z=19`;
+
+        // Feedback Visual
+        const msgDiv = document.getElementById('location-msg');
+        msgDiv.innerHTML = `<span class="location-success"><i data-lucide="map-pin" width="12"></i> Local selecionado no mapa!</span>`;
+        msgDiv.classList.remove('hidden');
+
+        // Busca endereço reverso
+        this.reverseGeocode(lat, lng);
+
+        this.closeMapModal();
+        lucide.createIcons();
+    },
+
+    // --- NO GPS AUTOMÁTICO (CORRIGIDO) ---
+    getCurrentLocation: function() {
+        if (!navigator.geolocation) {
+            alert('Seu navegador não suporta geolocalização.');
+            return;
+        }
+
+        const btn = document.querySelector('.btn-location-action');
+        const msgDiv = document.getElementById('location-msg');
+        
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="loader" class="spin-animate"></i>';
+        btn.classList.add('loading');
+        lucide.createIcons();
+
+        // Configurações de alta precisão
+        const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // --- CORREÇÃO AQUI: Link oficial do Google Maps ---
+                this.currentLocationLink = `https://maps.google.com/?q=${lat},${lng}&z=19`;
+                
+                // Se o mapa manual já tiver sido aberto, atualiza a posição dele também
+                if(this.mapInstance) {
+                    this.updateMapPosition(lat, lng);
+                }
+
+                this.reverseGeocode(lat, lng);
+
+                btn.classList.remove('loading');
+                btn.innerHTML = originalContent;
+                msgDiv.innerHTML = `<span class="location-success"><i data-lucide="check-circle" width="12"></i> Localização GPS anexada!</span>`;
+                msgDiv.classList.remove('hidden');
+                lucide.createIcons();
+            },
+            (error) => {
+                console.error(error);
+                btn.classList.remove('loading');
+                btn.innerHTML = originalContent;
+                alert('Não foi possível obter sua localização precisa.');
+                lucide.createIcons();
+            },
+            options
+        );
+    },
+
+    reverseGeocode: function(lat, lng) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(r => r.json())
+            .then(data => {
+                    if(data.address) {
+                    if(data.address.road) document.getElementById('cust-street').value = data.address.road;
+                    if(data.address.suburb || data.address.neighbourhood) document.getElementById('cust-district').value = data.address.suburb || data.address.neighbourhood;
+                    if(data.address.city || data.address.town) document.getElementById('cust-city').value = data.address.city || data.address.town;
+                    if(data.address.postcode) {
+                        document.getElementById('cust-cep').value = data.address.postcode;
+                        const statusIcon = document.getElementById('cep-status-icon');
+                        if(statusIcon) {
+                            statusIcon.innerHTML = '<i data-lucide="check-circle" width="18"></i>';
+                            statusIcon.classList.add('success');
+                        }
+                    }
+                    }
+            })
+            .catch(err => console.error("Erro reverse geocode", err));
+    },
+
+    // --- CARRINHO & CHECKOUT ---
     loadCart: function() {
         const saved = localStorage.getItem('mestre_pizzas_cart');
         if (saved) {
@@ -479,19 +656,15 @@ const app = {
     addToCart: function(productId) {
         const product = MENU_ITEMS.find(p => p.id === productId);
         if (!product) return;
-
-        // Gera ID único para o item no carrinho (permite mesmo produto com obs diferentes futuramente)
         const internalId = Date.now().toString();
-
         this.cart.push({
             ...product,
             internalId: internalId,
             quantity: 1,
             observation: ''
         });
-
         this.saveCart();
-        this.toggleCart(); // Abre o carrinho ao adicionar
+        this.toggleCart();
     },
 
     removeFromCart: function(internalId) {
@@ -516,95 +689,147 @@ const app = {
         }
     },
 
+    // --- Nova Função: Verifica se o endereço está completo ---
+    checkAddressCompletion: function() {
+        const name = document.getElementById('cust-name').value.trim();
+        const street = document.getElementById('cust-street').value.trim();
+        const number = document.getElementById('cust-number').value.trim();
+        const district = document.getElementById('cust-district').value.trim();
+        
+        const checkIcon = document.getElementById('delivery-check');
+        
+        // Se todos os campos obrigatórios tiverem valor
+        if (name && street && number && district) {
+            checkIcon.classList.add('completed');
+            // Remove o ícone de círculo vazio e põe o check cheio (opcional, ou só muda cor)
+            checkIcon.setAttribute('data-lucide', 'check-circle-2'); 
+        } else {
+            checkIcon.classList.remove('completed');
+        }
+        lucide.createIcons();
+    },
+
+    // --- Update Cart UI (Atualizado com Imagem e Layout) ---
     updateCartUI: function() {
         const container = document.getElementById('cart-items');
-        const footer = document.getElementById('cart-footer');
         const badge = document.getElementById('cart-count');
         const totalEl = document.getElementById('cart-total-value');
+        const formArea = document.getElementById('cart-form-area');
+        const checkoutArea = document.getElementById('cart-checkout-area');
+        
+        // Controle de visibilidade do Título "Detalhes do Pedido"
+        const itemsWrapper = document.getElementById('cart-items-wrapper');
 
-        // Atualiza badge
         const totalItems = this.cart.reduce((acc, item) => acc + item.quantity, 0);
         badge.innerText = totalItems;
         badge.classList.toggle('hidden', totalItems === 0);
 
         if (this.cart.length === 0) {
             container.innerHTML = '<div class="empty-cart-msg">Sua bandeja está vazia.</div>';
-            footer.classList.add('hidden');
+            formArea.classList.add('hidden');
+            checkoutArea.classList.add('hidden');
+            // Opcional: esconder o título "Detalhes" se vazio, ou manter
             return;
         }
 
-        footer.classList.remove('hidden');
+        formArea.classList.remove('hidden');
+        checkoutArea.classList.remove('hidden');
 
-        // Renderiza Itens
         let totalValue = 0;
+        
+        // Renderiza Itens com Imagem
         container.innerHTML = this.cart.map(item => {
             totalValue += item.price * item.quantity;
             return `
                 <div class="cart-item">
-                    <div class="cart-item-header">
-                        <span>${item.name}</span>
-                        <span class="text-red">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
-                    </div>
-                    <input 
-                        type="text" 
-                        class="obs-input" 
-                        placeholder="Obs: ex. sem cebola" 
-                        value="${item.observation}"
-                        onchange="app.updateObservation('${item.internalId}', this.value)"
-                    >
-                    <div class="cart-item-controls">
-                        <div>
-                            <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', -1)">-</button>
-                            <span class="qty-val">${item.quantity}</span>
-                            <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', 1)">+</button>
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                    
+                    <div class="cart-item-info">
+                        <div class="cart-item-header">
+                            <span>${item.name}</span>
+                            <span class="text-red">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
                         </div>
-                        <button class="remove-btn" onclick="app.removeFromCart('${item.internalId}')">Remover</button>
+                        
+                        <input type="text" class="obs-input" placeholder="Obs: ex. sem cebola" value="${item.observation}" onchange="app.updateObservation('${item.internalId}', this.value)">
+                        
+                        <div class="cart-item-controls">
+                            <div>
+                                <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', -1)">-</button>
+                                <span class="qty-val">${item.quantity}</span>
+                                <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', 1)">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="app.removeFromCart('${item.internalId}')">Remover</button>
+                        </div>
                     </div>
                 </div>
             `;
         }).join('');
 
         totalEl.innerText = `R$ ${totalValue.toFixed(2).replace('.', ',')}`;
+        
+        // Roda a verificação do endereço caso já tenha dados salvos/preenchidos
+        this.checkAddressCompletion();
+        lucide.createIcons();
     },
 
     checkout: function() {
         const name = document.getElementById('cust-name').value;
-        const address = document.getElementById('cust-address').value;
-        const district = document.getElementById('cust-phone').value; // Usando campo phone como bairro p/ simplificar
+        const street = document.getElementById('cust-street').value;
+        const number = document.getElementById('cust-number').value;
+        const complement = document.getElementById('cust-complement').value;
+        const district = document.getElementById('cust-district').value;
+        const reference = document.getElementById('cust-reference').value;
+        const city = document.getElementById('cust-city').value;
+        const cep = document.getElementById('cust-cep').value;
         const payment = document.getElementById('cust-payment').value;
         const obsGeral = document.getElementById('cust-obs').value;
 
-        if (!name || !address || !district) {
-            alert("Por favor, preencha Nome, Bairro e Endereço.");
+        if (!name || !street || !number || !district) {
+            alert("Por favor, preencha Nome, Rua, Número e Bairro.");
             return;
         }
 
-        let message = `*Olá! Quero fazer um pedido na Mestre das Pizzas* 🍕\n\n`;
-        message += `*Nome:* ${name}\n`;
-        message += `*Endereço:* ${address}\n`;
-        message += `*Bairro:* ${district}\n`;
+        let message = `*NOVO PEDIDO - MESTRE DAS PIZZAS* 🍕\n\n`;
+        message += `*Cliente:* ${name}\n`;
         message += `--------------------------------\n`;
         
         let total = 0;
         this.cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
             total += itemTotal;
-            message += `✅ ${item.quantity}x ${item.name}\n`;
+            message += `✅ ${item.quantity}x ${item.name}`;
+            if(item.price === 42.00 && item.observation === 'PROMOÇÃO DO DIA') {
+                 message += ` (Promo do Dia)`;
+            }
+            message += `\n`;
             if (item.observation) message += `   _(Obs: ${item.observation})_\n`;
             message += `   Valor: R$ ${itemTotal.toFixed(2).replace('.', ',')}\n`;
         });
 
         message += `--------------------------------\n`;
         message += `*TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n`;
-        message += `*Pagamento:* ${payment}\n`;
-        if (obsGeral) message += `*Obs. Gerais:* ${obsGeral}\n`;
+        message += `--------------------------------\n`;
+        message += `*📍 ENDEREÇO DE ENTREGA:*\n`;
+        message += `${street}, Nº ${number}\n`;
+        if (complement) message += `Complemento: ${complement}\n`;
+        message += `Bairro: ${district}\n`;
+        if (reference) message += `Ref: ${reference}\n`;
+        if (city) message += `Cidade: ${city}\n`;
+        if (cep) message += `CEP: ${cep}\n`;
+        
+        if (this.currentLocationLink) {
+            message += `\n🔗 *Localização GPS:* \n${this.currentLocationLink}\n`;
+        }
+
+        message += `--------------------------------\n`;
+        message += `*💳 Pagamento:* ${payment}\n`;
+        if (obsGeral) message += `*📝 Obs. Gerais:* ${obsGeral}\n`;
 
         const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     }
 };
 
-// Iniciar app quando carregar
 document.addEventListener('DOMContentLoaded', () => {
     app.init();
 });
