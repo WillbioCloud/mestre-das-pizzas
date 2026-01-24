@@ -641,7 +641,7 @@ const app = {
             this.mapInstance = L.map('map-container', { zoomControl: false }).setView([-17.74, -48.62], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(this.mapInstance);
             
-            // CORREÇÃO: Ponteiro do mouse (Mira)
+            // Cursor Mira
             document.getElementById('map-container').style.cursor = 'crosshair';
 
             this.mapInstance.on('movestart', () => { document.querySelector('.center-pin').classList.add('map-moving'); });
@@ -650,8 +650,8 @@ const app = {
         
         setTimeout(() => { 
             this.mapInstance.invalidateSize(); 
-            // CORREÇÃO: Adiciona mensagem de "Carregando" antes de buscar
-            this.showMapLoading();
+            // ATIVA O LOADING NO MODAL
+            document.getElementById('map-loading-overlay').classList.remove('hidden');
             this.detectInitialLocation(); 
         }, 300);
     },
@@ -665,23 +665,28 @@ const app = {
     },
 
     detectInitialLocation: function() {
-        if (!navigator.geolocation) {
-            // Se não tiver GPS, remove mensagem de loading após um tempo
-            setTimeout(() => document.getElementById('location-msg').classList.add('hidden'), 2000);
-            return;
-        }
+        // Se não tiver GPS ou demorar muito, remove o loading após 3s
+        const loadingTimeout = setTimeout(() => {
+            document.getElementById('map-loading-overlay').classList.add('hidden');
+        }, 5000);
+
+        if (!navigator.geolocation) return;
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
+                clearTimeout(loadingTimeout);
                 if(this.mapInstance) {
                     this.mapInstance.flyTo([pos.coords.latitude, pos.coords.longitude], 17, { animate: true, duration: 1.5 });
-                    // Sucesso: Limpa a mensagem de carregando
-                    setTimeout(() => document.getElementById('location-msg').classList.add('hidden'), 1500);
+                    // Remove o loading quando achar
+                    setTimeout(() => {
+                        document.getElementById('map-loading-overlay').classList.add('hidden');
+                    }, 1000);
                 }
             },
             (err) => {
+                clearTimeout(loadingTimeout);
+                document.getElementById('map-loading-overlay').classList.add('hidden');
                 console.log("GPS erro:", err);
-                document.getElementById('location-msg').innerHTML = `<span style="color: #ef4444;">Não foi possível obter GPS automático.</span>`;
             },
             { enableHighAccuracy: true, timeout: 8000 }
         );
@@ -764,14 +769,15 @@ const app = {
                 if(data.address) {
                     if(data.address.road) document.getElementById('cust-street').value = data.address.road;
                     
+                    // Preenche Bairro
                     if(data.address.suburb || data.address.neighbourhood) {
                         document.getElementById('cust-district').value = data.address.suburb || data.address.neighbourhood;
-                        this.calculateDeliveryFee(); // Recalcula taxa
+                        this.calculateDeliveryFee(); 
                     }
                     
                     // CORREÇÃO: Preenche Cidade - UF
-                    const city = data.address.city || data.address.town || data.address.village || 'Caldas Novas';
-                    const state = data.address.state || 'GO'; // Fallback seguro
+                    const city = data.address.city || data.address.town || data.address.village || data.address.municipality || 'Caldas Novas';
+                    const state = data.address.state || 'GO';
                     document.getElementById('cust-city').value = `${city} - ${state}`;
 
                     if(data.address.postcode) {
@@ -784,59 +790,28 @@ const app = {
     // --- CARRINHO & CHECKOUT ---
     loadCart: function() {
         const saved = localStorage.getItem('mestre_pizzas_cart');
-        if (saved) {
-            this.cart = JSON.parse(saved);
-            this.updateCartUI();
-        }
+        if (saved) { this.cart = JSON.parse(saved); this.updateCartUI(); }
     },
-
-    saveCart: function() {
-        localStorage.setItem('mestre_pizzas_cart', JSON.stringify(this.cart));
-        this.updateCartUI();
-    },
-
-    toggleCart: function() {
-        const sidebar = document.getElementById('cart-sidebar');
-        sidebar.classList.toggle('hidden');
-    },
-
-    addToCart: function(productId) {
-        const product = MENU_ITEMS.find(p => p.id === productId);
-        if (!product) return;
-        const internalId = Date.now().toString();
-        this.cart.push({
-            ...product,
-            internalId: internalId,
-            quantity: 1,
-            observation: ''
-        });
+    saveCart: function() { localStorage.setItem('mestre_pizzas_cart', JSON.stringify(this.cart)); this.updateCartUI(); },
+    toggleCart: function() { document.getElementById('cart-sidebar').classList.toggle('hidden'); },
+    
+    addToCart: function(id) {
+        const item = MENU_ITEMS.find(p => p.id === id);
+        if (!item) return;
+        this.cart.push({ ...item, internalId: Date.now().toString(), quantity: 1, observation: '' });
         this.saveCart();
         this.toggleCart();
     },
-
-    removeFromCart: function(internalId) {
-        this.cart = this.cart.filter(item => item.internalId !== internalId);
-        this.saveCart();
+    removeFromCart: function(id) { this.cart = this.cart.filter(i => i.internalId !== id); this.saveCart(); },
+    updateQuantity: function(id, delta) {
+        const item = this.cart.find(i => i.internalId === id);
+        if (item) { item.quantity += delta; if(item.quantity <= 0) this.removeFromCart(id); else this.saveCart(); }
+    },
+    updateObservation: function(id, text) {
+        const item = this.cart.find(i => i.internalId === id);
+        if (item) { item.observation = text; this.saveCart(); }
     },
 
-    updateQuantity: function(internalId, delta) {
-        const item = this.cart.find(i => i.internalId === internalId);
-        if (item) {
-            item.quantity += delta;
-            if (item.quantity <= 0) this.removeFromCart(internalId);
-            else this.saveCart();
-        }
-    },
-
-    updateObservation: function(internalId, text) {
-        const item = this.cart.find(i => i.internalId === internalId);
-        if (item) {
-            item.observation = text;
-            this.saveCart();
-        }
-    },
-
-    // --- Nova Função: Verifica se o endereço está completo ---
     checkAddressCompletion: function() {
         const name = document.getElementById('cust-name').value;
         const street = document.getElementById('cust-street').value;
@@ -852,19 +827,13 @@ const app = {
         lucide.createIcons();
     },
 
-    // --- Update Cart UI (Com Lógica de Totais) ---
     updateCartUI: function() {
         const container = document.getElementById('cart-items');
         const badge = document.getElementById('cart-count');
-        const formArea = document.getElementById('cart-form-area');
-        const checkoutArea = document.getElementById('cart-checkout-area');
-        
-        // Elementos de Valores
         const subtotalEl = document.getElementById('cart-subtotal-value');
         const deliveryEl = document.getElementById('cart-delivery-value');
         const totalEl = document.getElementById('cart-total-value');
-
-        // Calcula Subtotal (Produtos)
+        
         const subtotal = this.cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         const totalItems = this.cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -873,15 +842,14 @@ const app = {
 
         if (this.cart.length === 0) {
             container.innerHTML = '<div class="empty-cart-msg">Sua bandeja está vazia.</div>';
-            formArea.classList.add('hidden');
-            checkoutArea.classList.add('hidden');
+            document.getElementById('cart-form-area').classList.add('hidden');
+            document.getElementById('cart-checkout-area').classList.add('hidden');
             return;
         }
 
-        formArea.classList.remove('hidden');
-        checkoutArea.classList.remove('hidden');
+        document.getElementById('cart-form-area').classList.remove('hidden');
+        document.getElementById('cart-checkout-area').classList.remove('hidden');
 
-        // Renderiza Lista
         container.innerHTML = this.cart.map(item => `
             <div class="cart-item">
                 <img src="${item.image}" alt="${item.name}" class="cart-item-img">

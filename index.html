@@ -377,7 +377,8 @@
             
             <div class="modal-header">
                 <h3><i data-lucide="map"></i> Confirmar Localização</h3>
-                <p class="warning-text">Caso seja condomínio, selecione o local da <b>portaria</b>.</p>
+                <p class="warning-text">Arraste o mapa para posicionar o pino no local exato.</p>
+                <h6>Se for condomínio, selecione o local da <b>portaria</b>.</h6>
             </div>
 
             <div class="map-wrapper">
@@ -386,6 +387,11 @@
                 <div class="center-pin">
                     <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png" alt="Pino" class="pin-img">
                     <div class="pin-shadow"></div>
+                </div>
+
+                <div id="map-loading-overlay" class="map-loading-overlay hidden">
+                    <div class="spinner"></div>
+                    <p>Buscando sua localização...</p>
                 </div>
             </div>
 
