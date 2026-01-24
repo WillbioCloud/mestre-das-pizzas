@@ -149,7 +149,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
    ========================================================================== */
 .hero {
     position: relative;
-    height: 80vh;
+    height: 100vh;
     min-height: 500px;
     display: flex;
     align-items: center;
