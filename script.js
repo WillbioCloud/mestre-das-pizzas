@@ -313,8 +313,16 @@ const app = {
     },
 
     toggleMobileMenu: function() {
+
         const menu = document.getElementById('mobile-menu');
+        document.querySelectorAll('.mobile-menu a').forEach(el => el.classList.remove('active'));
+            const activePage = document.querySelector('.nav-link.active');
         menu.classList.toggle('hidden');
+        if(activePage) {
+            const pageId = activePage.getAttribute('data-page');
+            const mobileLink = document.querySelector(`.mobile-menu a[data-page="${pageId}"]`);
+            if(mobileLink) mobileLink.classList.add('active');
+        }
     },
 
     openWhatsApp: function() {

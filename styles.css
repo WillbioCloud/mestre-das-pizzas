@@ -101,8 +101,8 @@ button { cursor: pointer; border: none; font-family: inherit; }
 
 .nav-logo:hover { transform: scale(1.05); }
 
-.nav-links { display: none; gap: 2rem; }
-.nav-links a { font-weight: bold; }
+.nav-links { display: none; gap: 4rem; }
+.nav-links a { font-weight: bold; font-size: large; font-family: var(--font-serif); }
 .nav-links a:hover, .nav-links a.active { color: var(--color-yellow); }
 
 .nav-actions { display: flex; align-items: center; gap: 1rem; }
@@ -137,7 +137,9 @@ button { cursor: pointer; border: none; font-family: inherit; }
     padding: 1rem;
     border-top: 1px solid rgba(255,255,255,0.1);
 }
-.mobile-menu a { display: block; padding: 0.75rem 0; color: white; font-weight: bold; }
+.mobile-menu a{ display: block; padding: 0.75rem 0; color: white; font-weight: bold; font-size: large; font-family: var(--font-serif); }
+.mobile-menu a:hover, .mobile-menu a.active { color: var(--color-yellow); }
+
 
 @media (min-width: 768px) {
     .nav-links { display: flex; }
@@ -240,6 +242,8 @@ button { cursor: pointer; border: none; font-family: inherit; }
    6. GRID DE PRODUTOS & CARDS
    ========================================================================== */
 .section-header { text-align: center; margin-bottom: 3rem; }
+.section-header h1 { font-size: 1rem; color: var(--color-yellow); margin-bottom: 0.5rem; }
+.section-header h3 { font-size: 1rem; color: var(--color-yellow); margin-bottom: 0.5rem; }
 .section-header h2 { font-size: 2rem; color: var(--color-yellow); margin-bottom: 0.5rem; }
 .section-header p { color: var(--color-white); font-weight: bold; } /* Texto mais visível na textura */
 
@@ -284,7 +288,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 
 .product-card {
-    background: white;
+    background: rgb(243, 229, 191);
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: var(--shadow);
