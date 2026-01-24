@@ -332,9 +332,19 @@
             </div>
 
             <div id="cart-checkout-area" class="cart-sticky-footer hidden">
-                <div class="cart-total-row">
-                    <span>Total:</span>
-                    <span id="cart-total-value">R$ 0,00</span>
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="cart-subtotal-value">R$ 0,00</span>
+                    </div>
+                    <div class="summary-row delivery-row">
+                        <span>Entrega (<span id="delivery-district">Calculando...</span>):</span>
+                        <span id="cart-delivery-value" class="text-red">R$ 0,00</span>
+                    </div>
+                    <div class="cart-total-row">
+                        <span>Total:</span>
+                        <span id="cart-total-value">R$ 0,00</span>
+                    </div>
                 </div>
                 <button onclick="app.checkout()" class="btn btn-success full-width">
                     Finalizar no WhatsApp <i data-lucide="send"></i>

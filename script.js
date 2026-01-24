@@ -1,3 +1,17 @@
+/* --- TABELA DE TAXAS DE ENTREGA (Caldas Novas) --- */
+// O sistema normaliza o texto (ignora acentos e maiúsculas)
+const DELIVERY_RATES = {
+    'centro': 5.00,
+    'nova vila': 7.00,
+    'itaguai': 8.00,
+    'bandeirantes': 6.00,
+    'mansoes aguas quentes': 10.00,
+    'jardim brasil': 9.00,
+    'parque das brisas': 12.00,
+    'holiday': 8.00,
+    'default': 15.00 // Valor padrão caso não encontre o bairro
+};
+
 /* --- Agendamento da Pizza do Dia (0 = Domingo, 1 = Segunda...) --- */
 // Usamos os IDs das pizzas que já existem no MENU_ITEMS
 const PROMO_SCHEDULE = {
@@ -231,25 +245,71 @@ const MENU_ITEMS = [
 
 const WHATSAPP_NUMBER = "5564999232217"; // Substitua pelo seu número real
 
-/**
- * APLICAÇÃO PRINCIPAL
- */
+/* ==========================================================================
+   APLICAÇÃO PRINCIPAL
+   ========================================================================== */
 const app = {
     cart: [],
     currentLocationLink: null,
     mapInstance: null,
+    contactMapInstance: null,
     selectedLat: null,
     selectedLng: null,
+    deliveryFee: 0, 
     
-    // Inicialização
+    // --- Inicialização ---
     init: function() {
         this.loadCart();
         this.renderHome();
         this.renderMenu();
         this.initParallax();
-        lucide.createIcons();
+        setTimeout(() => this.initScrollAnimations(), 100);
+        
+        // Listener para recalcular taxa quando o usuário digitar manualmente
+        const districtInput = document.getElementById('cust-district');
+        if(districtInput) {
+            districtInput.addEventListener('input', () => this.calculateDeliveryFee());
+            districtInput.addEventListener('blur', () => this.calculateDeliveryFee());
+        }
 
-    
+        lucide.createIcons();
+    },
+
+    // --- LÓGICA DE ENTREGA E TAXAS ---
+    calculateDeliveryFee: function() {
+        const districtInput = document.getElementById('cust-district');
+        const districtLabel = document.getElementById('delivery-district');
+        
+        if (!districtInput) return;
+
+        const districtRaw = districtInput.value.trim();
+        
+        if (districtRaw.length < 3) {
+            this.deliveryFee = 0;
+            districtLabel.innerText = 'Informe o bairro';
+            this.updateCartUI(); 
+            return;
+        }
+
+        // Normaliza (remove acentos e deixa minúsculo)
+        const districtNormalized = districtRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+        let fee = DELIVERY_RATES['default'];
+        let found = false;
+
+        // Procura na tabela
+        for (const [zone, price] of Object.entries(DELIVERY_RATES)) {
+            if (districtNormalized.includes(zone)) {
+                fee = price;
+                found = true;
+                break;
+            }
+        }
+
+        this.deliveryFee = fee;
+        districtLabel.innerText = districtRaw; 
+        
+        this.updateCartUI(); 
     },
 
     // --- PARALLAX EFFECT ---
@@ -265,34 +325,31 @@ const app = {
         });
     },
 
-    // --- ANIMAÇÕES DE SCROLL ---
+    // --- ANIMAÇÕES DE SCROLL E PARALLAX ---
     initScrollAnimations: function() {
-        // Opções do observador
-        const observerOptions = {
-            root: null,        // Usa a viewport do navegador
-            rootMargin: '0px', // Sem margem extra
-            threshold: 0.1     // Dispara quando 10% do elemento estiver visível
-        };
-
-        // Cria o observador
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Adiciona a classe que faz aparecer
                     entry.target.classList.add('scroll-visible');
-                    // Para de observar este elemento (animação roda só uma vez)
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        // Seleciona os elementos que devem ser animados
-        // Aqui estamos pegando: Cards de Produto, Cabeçalhos de Seção e Cards de Contato
         const elementsToAnimate = document.querySelectorAll('.product-card, .section-header, .contact-card');
-
         elementsToAnimate.forEach(el => {
-            el.classList.add('scroll-hidden'); // Esconde inicialmente
-            observer.observe(el);              // Começa a vigiar
+            el.classList.add('scroll-hidden');
+            observer.observe(el);
+        });
+    },
+
+    initParallax: function() {
+        window.addEventListener('scroll', () => {
+            const heroWrapper = document.querySelector('.hero-video-wrapper');
+            if (heroWrapper && window.pageYOffset < window.innerHeight) {
+                heroWrapper.style.transform = `translateY(${window.pageYOffset * 0.5}px)`;
+            }
         });
     },
 
@@ -530,48 +587,45 @@ const app = {
 
     // --- ENDEREÇO & MAPA ---
 
+    // --- BUSCA POR CEP ---
     fetchAddressByCep: function() {
         const cepInput = document.getElementById('cust-cep');
         const statusIcon = document.getElementById('cep-status-icon');
         const cep = cepInput.value.replace(/\D/g, '');
 
-        if (cep.length !== 8) {
-            statusIcon.innerHTML = '<i data-lucide="search" width="18"></i>';
-            statusIcon.className = 'status-badge';
-            lucide.createIcons();
-            return; 
-        }
+        if (cep.length !== 8) return; 
 
         statusIcon.innerHTML = '<i data-lucide="loader-2" width="18"></i>';
         statusIcon.classList.add('spin-animate');
-        cepInput.style.opacity = '0.7';
         lucide.createIcons();
 
         fetch(`https://viacep.com.br/ws/${cep}/json/`)
             .then(response => response.json())
             .then(data => {
-                cepInput.style.opacity = '1';
                 statusIcon.classList.remove('spin-animate');
-
                 if (!data.erro) {
                     statusIcon.innerHTML = '<i data-lucide="check-circle" width="18"></i>';
                     statusIcon.classList.add('success');
-                    statusIcon.classList.remove('error');
-
+                    
                     document.getElementById('cust-street').value = data.logradouro;
-                    document.getElementById('cust-district').value = data.bairro;
+                    
+                    const districtField = document.getElementById('cust-district');
+                    districtField.value = data.bairro;
+                    
+                    // CORREÇÃO: Preenche Cidade - UF
                     document.getElementById('cust-city').value = `${data.localidade} - ${data.uf}`;
+                    
                     document.getElementById('cust-number').focus();
+                    
+                    // Força cálculo
+                    this.calculateDeliveryFee(); 
+                    
                 } else {
-                    statusIcon.innerHTML = '<i data-lucide="x-circle" width="18"></i>';
-                    statusIcon.classList.add('error');
-                    statusIcon.classList.remove('success');
                     alert('CEP não encontrado.');
                 }
                 lucide.createIcons();
             })
             .catch(err => {
-                cepInput.style.opacity = '1';
                 statusIcon.classList.remove('spin-animate');
                 statusIcon.innerHTML = '<i data-lucide="alert-circle" width="18"></i>';
                 statusIcon.classList.add('error');
@@ -579,67 +633,57 @@ const app = {
             });
     },
 
-    // --- MAPA MANUAL (Com Autolocalização) ---
-
+    // --- MAPA MANUAL (Estilo iFood) ---
     openMapModal: function() {
-        const modal = document.getElementById('map-modal');
-        modal.classList.remove('hidden');
-
-        // Se o mapa ainda não foi criado, cria agora
+        document.getElementById('map-modal').classList.remove('hidden');
+        
         if (!this.mapInstance) {
-            // Posição inicial padrão (Caldas Novas) caso o GPS falhe
-            const defaultLat = -17.74; 
-            const defaultLng = -48.62;
+            this.mapInstance = L.map('map-container', { zoomControl: false }).setView([-17.74, -48.62], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(this.mapInstance);
+            
+            // CORREÇÃO: Ponteiro do mouse (Mira)
+            document.getElementById('map-container').style.cursor = 'crosshair';
 
-            this.mapInstance = L.map('map-container', {
-                zoomControl: false 
-            }).setView([defaultLat, defaultLng], 15);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(this.mapInstance);
-
-            // Eventos visuais do pino fixo
-            this.mapInstance.on('movestart', () => {
-                const pin = document.querySelector('.center-pin');
-                if(pin) pin.classList.add('map-moving');
-            });
-
-            this.mapInstance.on('moveend', () => {
-                const pin = document.querySelector('.center-pin');
-                if(pin) pin.classList.remove('map-moving');
-            });
+            this.mapInstance.on('movestart', () => { document.querySelector('.center-pin').classList.add('map-moving'); });
+            this.mapInstance.on('moveend', () => { document.querySelector('.center-pin').classList.remove('map-moving'); });
         }
         
-        // Timeout para corrigir renderização no modal
-        setTimeout(() => {
-            this.mapInstance.invalidateSize();
-            // CHAMA A BUSCA AUTOMÁTICA SEMPRE QUE ABRIR
-            this.detectInitialLocation();
+        setTimeout(() => { 
+            this.mapInstance.invalidateSize(); 
+            // CORREÇÃO: Adiciona mensagem de "Carregando" antes de buscar
+            this.showMapLoading();
+            this.detectInitialLocation(); 
         }, 300);
     },
 
-    detectInitialLocation: function() {
-        // Se não tiver suporte, só ignora
-        if (!navigator.geolocation) return;
+    showMapLoading: function() {
+        const msgDiv = document.getElementById('location-msg');
+        // Usamos uma mensagem temporária de cor azul ou neutra
+        msgDiv.innerHTML = `<span style="color: #666; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="loader-2" class="spin-animate" width="16"></i> Buscando sua localização...</span>`;
+        msgDiv.classList.remove('hidden');
+        lucide.createIcons();
+    },
 
-        // Tenta pegar a posição com alta precisão
+    detectInitialLocation: function() {
+        if (!navigator.geolocation) {
+            // Se não tiver GPS, remove mensagem de loading após um tempo
+            setTimeout(() => document.getElementById('location-msg').classList.add('hidden'), 2000);
+            return;
+        }
+
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                const { latitude, longitude } = pos.coords;
-                // Move o mapa suavemente até o usuário
                 if(this.mapInstance) {
-                    this.mapInstance.flyTo([latitude, longitude], 17, {
-                        animate: true,
-                        duration: 1.5
-                    });
+                    this.mapInstance.flyTo([pos.coords.latitude, pos.coords.longitude], 17, { animate: true, duration: 1.5 });
+                    // Sucesso: Limpa a mensagem de carregando
+                    setTimeout(() => document.getElementById('location-msg').classList.add('hidden'), 1500);
                 }
             },
             (err) => {
-                console.log("GPS não autorizado ou indisponível:", err);
-                // Não fazemos nada, o mapa fica na posição padrão e o usuário move manualmente
+                console.log("GPS erro:", err);
+                document.getElementById('location-msg').innerHTML = `<span style="color: #ef4444;">Não foi possível obter GPS automático.</span>`;
             },
-            { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+            { enableHighAccuracy: true, timeout: 8000 }
         );
     },
 
@@ -649,27 +693,16 @@ const app = {
 
     confirmMapLocation: function() {
         if (!this.mapInstance) return;
-
-        // PEGA O CENTRO DO MAPA
         const center = this.mapInstance.getCenter();
-        const lat = center.lat;
-        const lng = center.lng;
+        this.selectedLat = center.lat;
+        this.selectedLng = center.lng;
+        this.currentLocationLink = `https://maps.google.com/?q=${center.lat},${center.lng}&z=19`;
 
-        // Salva nas variáveis
-        this.selectedLat = lat;
-        this.selectedLng = lng;
-
-        // --- CORREÇÃO AQUI: Link oficial do Google Maps ---
-        this.currentLocationLink = `https://maps.google.com/?q=${lat},${lng}&z=19`;
-
-        // Feedback Visual
         const msgDiv = document.getElementById('location-msg');
-        msgDiv.innerHTML = `<span class="location-success"><i data-lucide="map-pin" width="12"></i> Local selecionado no mapa!</span>`;
+        msgDiv.innerHTML = `<span class="location-success"><i data-lucide="map-pin" width="12"></i> Local selecionado!</span>`;
         msgDiv.classList.remove('hidden');
 
-        // Busca endereço reverso
-        this.reverseGeocode(lat, lng);
-
+        this.reverseGeocode(center.lat, center.lng);
         this.closeMapModal();
         lucide.createIcons();
     },
@@ -728,21 +761,24 @@ const app = {
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
             .then(r => r.json())
             .then(data => {
-                    if(data.address) {
+                if(data.address) {
                     if(data.address.road) document.getElementById('cust-street').value = data.address.road;
-                    if(data.address.suburb || data.address.neighbourhood) document.getElementById('cust-district').value = data.address.suburb || data.address.neighbourhood;
-                    if(data.address.city || data.address.town) document.getElementById('cust-city').value = data.address.city || data.address.town;
+                    
+                    if(data.address.suburb || data.address.neighbourhood) {
+                        document.getElementById('cust-district').value = data.address.suburb || data.address.neighbourhood;
+                        this.calculateDeliveryFee(); // Recalcula taxa
+                    }
+                    
+                    // CORREÇÃO: Preenche Cidade - UF
+                    const city = data.address.city || data.address.town || data.address.village || 'Caldas Novas';
+                    const state = data.address.state || 'GO'; // Fallback seguro
+                    document.getElementById('cust-city').value = `${city} - ${state}`;
+
                     if(data.address.postcode) {
                         document.getElementById('cust-cep').value = data.address.postcode;
-                        const statusIcon = document.getElementById('cep-status-icon');
-                        if(statusIcon) {
-                            statusIcon.innerHTML = '<i data-lucide="check-circle" width="18"></i>';
-                            statusIcon.classList.add('success');
-                        }
                     }
-                    }
-            })
-            .catch(err => console.error("Erro reverse geocode", err));
+                }
+            });
     },
 
     // --- CARRINHO & CHECKOUT ---
@@ -802,17 +838,13 @@ const app = {
 
     // --- Nova Função: Verifica se o endereço está completo ---
     checkAddressCompletion: function() {
-        const name = document.getElementById('cust-name').value.trim();
-        const street = document.getElementById('cust-street').value.trim();
-        const number = document.getElementById('cust-number').value.trim();
-        const district = document.getElementById('cust-district').value.trim();
-        
+        const name = document.getElementById('cust-name').value;
+        const street = document.getElementById('cust-street').value;
+        const district = document.getElementById('cust-district').value;
         const checkIcon = document.getElementById('delivery-check');
         
-        // Se todos os campos obrigatórios tiverem valor
-        if (name && street && number && district) {
+        if (name && street && district) {
             checkIcon.classList.add('completed');
-            // Remove o ícone de círculo vazio e põe o check cheio (opcional, ou só muda cor)
             checkIcon.setAttribute('data-lucide', 'check-circle-2'); 
         } else {
             checkIcon.classList.remove('completed');
@@ -820,15 +852,22 @@ const app = {
         lucide.createIcons();
     },
 
-    // --- Update Cart UI (Visual Melhorado) ---
+    // --- Update Cart UI (Com Lógica de Totais) ---
     updateCartUI: function() {
         const container = document.getElementById('cart-items');
         const badge = document.getElementById('cart-count');
-        const totalEl = document.getElementById('cart-total-value');
         const formArea = document.getElementById('cart-form-area');
         const checkoutArea = document.getElementById('cart-checkout-area');
         
+        // Elementos de Valores
+        const subtotalEl = document.getElementById('cart-subtotal-value');
+        const deliveryEl = document.getElementById('cart-delivery-value');
+        const totalEl = document.getElementById('cart-total-value');
+
+        // Calcula Subtotal (Produtos)
+        const subtotal = this.cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         const totalItems = this.cart.reduce((acc, item) => acc + item.quantity, 0);
+
         badge.innerText = totalItems;
         badge.classList.toggle('hidden', totalItems === 0);
 
@@ -842,60 +881,54 @@ const app = {
         formArea.classList.remove('hidden');
         checkoutArea.classList.remove('hidden');
 
-        let totalValue = 0;
-        
-        // Renderiza Itens com Layout Organizado
-        container.innerHTML = this.cart.map(item => {
-            totalValue += item.price * item.quantity;
-            return `
-                <div class="cart-item">
-                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-                    
-                    <div class="cart-item-info">
-                        <div class="cart-item-header">
-                            <span class="item-name">${item.name}</span>
-                            <span class="item-price">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+        // Renderiza Lista
+        container.innerHTML = this.cart.map(item => `
+            <div class="cart-item">
+                <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                <div class="cart-item-info">
+                    <div class="cart-item-header">
+                        <span class="item-name">${item.name}</span>
+                        <span class="item-price">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <input type="text" class="obs-input" placeholder="Obs: ex. sem cebola" value="${item.observation || ''}" onchange="app.updateObservation('${item.internalId}', this.value)">
+                    <div class="cart-item-footer">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', -1)">-</button>
+                            <span class="qty-val">${item.quantity}</span>
+                            <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', 1)">+</button>
                         </div>
-                        
-                        <input 
-                            type="text" 
-                            class="obs-input" 
-                            placeholder="Alguma observação?" 
-                            value="${item.observation}"
-                            onchange="app.updateObservation('${item.internalId}', this.value)"
-                        >
-                        
-                        <div class="cart-item-footer">
-                            <div class="qty-wrapper">
-                                <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', -1)">-</button>
-                                <span class="qty-val">${item.quantity}</span>
-                                <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', 1)">+</button>
-                            </div>
-                            
-                            <button class="remove-btn" onclick="app.removeFromCart('${item.internalId}')">
-                                <i data-lucide="trash-2" width="14"></i> Remover
-                            </button>
-                        </div>
+                        <button class="remove-btn" onclick="app.removeFromCart('${item.internalId}')"><i data-lucide="trash-2" width="14"></i> Remover</button>
                     </div>
                 </div>
-            `;
-        }).join('');
+            </div>
+        `).join('');
 
-        totalEl.innerText = `R$ ${totalValue.toFixed(2).replace('.', ',')}`;
+        // ATUALIZA OS VALORES NA TELA
+        const totalFinal = subtotal + this.deliveryFee;
+
+        subtotalEl.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+        
+        if (this.deliveryFee > 0) {
+            deliveryEl.innerText = `+ R$ ${this.deliveryFee.toFixed(2).replace('.', ',')}`;
+            deliveryEl.classList.remove('text-green'); // Cor normal ou vermelha
+        } else {
+            deliveryEl.innerText = 'A calcular';
+        }
+
+        totalEl.innerText = `R$ ${totalFinal.toFixed(2).replace('.', ',')}`;
         
         this.checkAddressCompletion();
         lucide.createIcons();
     },
 
+    // --- Checkout (Envia taxa no WhatsApp) ---
     checkout: function() {
         const name = document.getElementById('cust-name').value;
         const street = document.getElementById('cust-street').value;
         const number = document.getElementById('cust-number').value;
-        const complement = document.getElementById('cust-complement').value;
         const district = document.getElementById('cust-district').value;
+        const complement = document.getElementById('cust-complement').value;
         const reference = document.getElementById('cust-reference').value;
-        const city = document.getElementById('cust-city').value;
-        const cep = document.getElementById('cust-cep').value;
         const payment = document.getElementById('cust-payment').value;
         const obsGeral = document.getElementById('cust-obs').value;
 
@@ -908,41 +941,38 @@ const app = {
         message += `*Cliente:* ${name}\n`;
         message += `--------------------------------\n`;
         
-        let total = 0;
+        let subtotal = 0;
         this.cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
-            total += itemTotal;
-            message += `✅ ${item.quantity}x ${item.name}`;
-            if(item.price === 42.00 && item.observation === 'PROMOÇÃO DO DIA') {
-                 message += ` (Promo do Dia)`;
-            }
-            message += `\n`;
+            subtotal += itemTotal;
+            message += `✅ ${item.quantity}x ${item.name}\n`;
             if (item.observation) message += `   _(Obs: ${item.observation})_\n`;
             message += `   Valor: R$ ${itemTotal.toFixed(2).replace('.', ',')}\n`;
         });
 
+        const totalFinal = subtotal + this.deliveryFee;
+
         message += `--------------------------------\n`;
-        message += `*TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n`;
+        message += `Subtotal: R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+        message += `🛵 *Taxa de Entrega:* R$ ${this.deliveryFee.toFixed(2).replace('.', ',')}\n`;
+        message += `*TOTAL FINAL: R$ ${totalFinal.toFixed(2).replace('.', ',')}*\n`;
         message += `--------------------------------\n`;
-        message += `*📍 ENDEREÇO DE ENTREGA:*\n`;
-        message += `${street}, Nº ${number}\n`;
+        
+        message += `*📍 ENDEREÇO:*\n${street}, Nº ${number} - ${district}\n`;
         if (complement) message += `Complemento: ${complement}\n`;
-        message += `Bairro: ${district}\n`;
         if (reference) message += `Ref: ${reference}\n`;
-        if (city) message += `Cidade: ${city}\n`;
-        if (cep) message += `CEP: ${cep}\n`;
         
         if (this.currentLocationLink) {
-            message += `\n🔗 *Localização GPS:* \n${this.currentLocationLink}\n`;
+            message += `\n🔗 *GPS:* ${this.currentLocationLink}\n`;
         }
 
         message += `--------------------------------\n`;
         message += `*💳 Pagamento:* ${payment}\n`;
-        if (obsGeral) message += `*📝 Obs. Gerais:* ${obsGeral}\n`;
+        if (obsGeral) message += `*📝 Nota:* ${obsGeral}\n`;
 
         const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
-    }
+    },
 };
 
 document.addEventListener('DOMContentLoaded', () => {
