@@ -18,6 +18,15 @@ const DAYS_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MENU_ITEMS = [
     // --- COMBOS & PROMOÇÕES ---
     {
+      id: 'promo-dia',
+      name: 'Promoção do Dia',
+      description: 'Consultar sabor do dia. Todos os dias temos um sabor especial por um preço fixo.',
+      price: 42.00,
+      category: 'combos',
+      image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500&q=80',
+      isPromo: true
+    },
+    {
       id: 'combo-familia',
       name: 'Combo Família',
       description: '2 pizzas grandes de sal + 1 refrigerante de 2 litros (Coca-Cola, Fanta ou Guaraná Antárctica).',
@@ -33,15 +42,6 @@ const MENU_ITEMS = [
       price: 91.00,
       category: 'combos',
       image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769207797/Gemini_Generated_Image_33hyd933hyd933hy_xa9lsy.png',
-      isPromo: true
-    },
-    {
-      id: 'promo-dia',
-      name: 'Promoção do Dia',
-      description: 'Consultar sabor do dia. Todos os dias temos um sabor especial por um preço fixo.',
-      price: 42.00,
-      category: 'combos',
-      image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500&q=80',
       isPromo: true
     },
 
