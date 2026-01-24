@@ -138,22 +138,7 @@ const MENU_ITEMS = [
     },
 
     // --- BEBIDAS ---
-    {
-      id: 'agua-sem-gas',
-      name: 'Água sem gás',
-      description: '500ml',
-      price: 3.00,
-      category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=500&q=80'
-    },
-    {
-      id: 'agua-com-gas',
-      name: 'Água com gás',
-      description: '500ml',
-      price: 3.00,
-      category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1564414277413-5804291a3294?w=500&q=80'
-    },
+    
     {
       id: 'coca-2l',
       name: 'Coca-Cola 2LT',
@@ -216,7 +201,7 @@ const MENU_ITEMS = [
       description: '350ml',
       price: 5.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769213654/Fanta_lata_is7zn3.png'
     },
     {
       id: 'guarana-lata',
@@ -225,6 +210,22 @@ const MENU_ITEMS = [
       price: 5.00,
       category: 'bebidas',
       image: 'https://img.megaboxatacado.com.br/produto/1000X1000/202039_10951.jpg'
+    },
+    {
+      id: 'agua-sem-gas',
+      name: 'Água sem gás',
+      description: '500ml',
+      price: 3.00,
+      category: 'bebidas',
+      image: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=500&q=80'
+    },
+    {
+      id: 'agua-com-gas',
+      name: 'Água com gás',
+      description: '500ml',
+      price: 3.00,
+      category: 'bebidas',
+      image: 'https://images.unsplash.com/photo-1564414277413-5804291a3294?w=500&q=80'
     },
 ];
 
