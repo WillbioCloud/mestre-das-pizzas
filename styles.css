@@ -787,6 +787,74 @@ footer {
 .footer-links a { text-decoration: none; color: #e7e5e4; transition: all 0.2s; display: inline-block; }
 .footer-links a:hover { color: var(--color-yellow); transform: translateX(5px); }
 
+/* --- Página de Contato --- */
+
+/* Ajuste no Grid para ficar mais alto e imponente */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: stretch; /* Estica as colunas para terem a mesma altura */
+}
+
+@media (min-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr 1.5fr; /* O mapa (direita) fica maior que o texto */
+    }
+}
+
+.contact-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    border: 1px solid #e7e5e4;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.contact-card h3 {
+    color: var(--color-brown);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-yellow);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* O Mapa de Contato */
+#contact-map {
+    width: 100%;
+    min-height: 400px; /* Garante altura mesmo no mobile */
+    height: 100%;      /* Ocupa toda altura disponível no desktop */
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 4px solid white; /* Moldura branca elegante */
+    z-index: 1;
+}
+
+/* Ícones de Contato mais bonitos */
+.contact-item {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
+
+.icon-box {
+    background-color: #fff8e7;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-red);
+    flex-shrink: 0;
+    border: 1px solid #fcd34d;
+}
 .contact-list { list-style: none; padding: 0; }
 .contact-list li { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; }
 .footer-icon { color: var(--color-yellow); min-width: 20px; margin-top: 4px; }
@@ -962,3 +1030,57 @@ footer {
 }
 
 .map-moving .pin-shadow { opacity: 0.5; transform: scale(0.8); }
+
+/* ==========================================================================
+   13. ANIMAÇÕES (Hero & Scroll)
+   ========================================================================== */
+
+/* --- Keyframes (O movimento de subir e aparecer) --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px); /* Começa 40px abaixo */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Termina na posição original */
+    }
+}
+
+/* --- Hero (Animação de Entrada) --- */
+/* O "forwards" mantém o elemento visível no final da animação */
+
+.hero h1 {
+    opacity: 0; /* Começa invisível para não piscar */
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.hero p {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.3s forwards; /* Espera 0.3s (Delay) */
+}
+
+.hero-buttons {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.6s forwards; /* Espera 0.6s (Delay) */
+}
+
+/* --- Scroll (Animação ao Rolar) --- */
+/* Esta classe será adicionada via Javascript aos elementos que queremos animar */
+.scroll-hidden {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out; /* Suavidade da transição */
+    will-change: opacity, transform; /* Otimização de performance */
+}
+
+.scroll-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Cascata suave para itens de grid (um depois do outro) */
+/* Se houver vários cards, aplica um pequeno delay baseado na ordem (opcional, mas chique) */
+.product-card:nth-child(2) { transition-delay: 0.1s; }
+.product-card:nth-child(3) { transition-delay: 0.2s; }
+.product-card:nth-child(4) { transition-delay: 0.3s; }

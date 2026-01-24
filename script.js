@@ -248,6 +248,8 @@ const app = {
         this.renderMenu();
         this.initParallax();
         lucide.createIcons();
+
+    
     },
 
     // --- PARALLAX EFFECT ---
@@ -260,6 +262,37 @@ const app = {
             if (scrolled < window.innerHeight) {
                 heroWrapper.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
+        });
+    },
+
+    // --- ANIMAÇÕES DE SCROLL ---
+    initScrollAnimations: function() {
+        // Opções do observador
+        const observerOptions = {
+            root: null,        // Usa a viewport do navegador
+            rootMargin: '0px', // Sem margem extra
+            threshold: 0.1     // Dispara quando 10% do elemento estiver visível
+        };
+
+        // Cria o observador
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Adiciona a classe que faz aparecer
+                    entry.target.classList.add('scroll-visible');
+                    // Para de observar este elemento (animação roda só uma vez)
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Seleciona os elementos que devem ser animados
+        // Aqui estamos pegando: Cards de Produto, Cabeçalhos de Seção e Cards de Contato
+        const elementsToAnimate = document.querySelectorAll('.product-card, .section-header, .contact-card');
+
+        elementsToAnimate.forEach(el => {
+            el.classList.add('scroll-hidden'); // Esconde inicialmente
+            observer.observe(el);              // Começa a vigiar
         });
     },
 
@@ -416,6 +449,75 @@ const app = {
         this.closePromoModal();
         this.toggleCart();
         this.updateCartUI();
+    },
+
+    // Adicione esta variável no topo do objeto app, junto com cart, mapInstance...
+    contactMapInstance: null,
+
+    // --- NAVEGAÇÃO (Atualizada) ---
+    navigate: function(pageId) {
+        document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        
+        const target = document.getElementById(`page-${pageId}`);
+        if(target) target.classList.remove('hidden');
+
+        const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+        if(navLink) navLink.classList.add('active');
+
+        document.getElementById('mobile-menu').classList.add('hidden');
+        window.scrollTo(0,0);
+
+        // SE FOR A PÁGINA DE CONTATO, INICIA O MAPA
+        if (pageId === 'contact') {
+            // Pequeno delay para garantir que a div está visível antes de renderizar
+            setTimeout(() => {
+                this.initContactMap();
+            }, 100);
+        }
+
+        lucide.createIcons();
+    },
+
+    // --- MAPA DE CONTATO (Novo) ---
+    initContactMap: function() {
+        // Se já existe, apenas atualiza o tamanho (corrige bug de mapa cinza)
+        if (this.contactMapInstance) {
+            this.contactMapInstance.invalidateSize();
+            return;
+        }
+
+        // Coordenadas de Caldas Novas
+        const caldasCoords = [-17.7436, -48.6253];
+
+        this.contactMapInstance = L.map('contact-map', {
+            scrollWheelZoom: false // Evita scroll acidental na página
+        }).setView(caldasCoords, 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(this.contactMapInstance);
+
+        // Círculo de Destaque (Área de Entrega)
+        L.circle(caldasCoords, {
+            color: '#9A2A2A',       // Vermelho da marca
+            fillColor: '#9A2A2A',
+            fillOpacity: 0.1,       // Bem suave
+            radius: 3500            // 3.5km de raio
+        }).addTo(this.contactMapInstance);
+
+        // Marcador da Loja
+        const icon = L.icon({
+            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+
+        L.marker(caldasCoords, { icon: icon }).addTo(this.contactMapInstance)
+            .bindPopup('<b>Mestre das Pizzas</b><br>O melhor sabor de Caldas!')
+            .openPopup();
     },
 
     // --- ENDEREÇO & MAPA ---

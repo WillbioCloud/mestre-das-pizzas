@@ -119,38 +119,42 @@
             <div class="container section">
                 <div class="section-header">
                     <h2>Fale Conosco</h2>
-                    <p>Estamos prontos para atender você.</p>
+                    <p>Venha nos visitar ou peça no conforto da sua casa.</p>
                 </div>
                 
                 <div class="contact-grid">
                     <div class="contact-card">
-                        <h3>Informações</h3>
+                        <h3>Nossos Canais</h3>
+                        
                         <div class="contact-item">
-                            <i data-lucide="phone" class="icon-brand"></i>
+                            <div class="icon-box"><i data-lucide="phone"></i></div>
                             <div>
-                                <strong>WhatsApp</strong>
-                                <p>Faça seu pedido diretamente.</p>
-                                </div>
-                        </div>
-                        <div class="contact-item">
-                            <i data-lucide="clock" class="icon-brand"></i>
-                            <div>
-                                <strong>Horário</strong>
-                                <p>Seg - Dom: 18:00 às 23:30</p>
+                                <strong>WhatsApp Delivery</strong>
+                                <p style="color: #666;">(64) 99318-2960</p>
+                                <small style="color: #999;">Atendimento rápido</small>
                             </div>
                         </div>
+
                         <div class="contact-item">
-                            <i data-lucide="map-pin" class="icon-brand"></i>
+                            <div class="icon-box"><i data-lucide="clock"></i></div>
+                            <div>
+                                <strong>Horário de Funcionamento</strong>
+                                <p style="color: #666;">Segunda a Domingo</p>
+                                <p style="color: #666;">18:00 às 23:30</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="icon-box"><i data-lucide="map-pin"></i></div>
                             <div>
                                 <strong>Endereço</strong>
-                                <p>Rua das Pizzas, 123 - Centro</p>
+                                <p style="color: #666;">Av. das Águas Quentes, 123</p>
+                                <p style="color: #666;">Centro, Caldas Novas - GO</p>
                             </div>
                         </div>
                     </div>
-                    <div class="map-placeholder">
-                        <i data-lucide="map"></i>
-                        <p>Mapa do Google (Placeholder)</p>
-                    </div>
+
+                    <div id="contact-map"></div>
                 </div>
             </div>
         </section>
@@ -187,7 +191,7 @@
                     <li><a href="#" onclick="app.navigate('home')">Home</a></li>
                     <li><a href="#" onclick="app.navigate('menu')">Cardápio Completo</a></li>
                     <li><a href="#" onclick="app.navigate('menu')">Promoções</a></li>
-                    <li><a href="#" onclick="app.navigate('contact')">Área de Entrega</a></li>
+                    <li><a href="#" onclick="app.navigate('contact')">Localização e Contato</a></li>
                 </ul>
             </div>
 
