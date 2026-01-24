@@ -1,5 +1,8 @@
-/* --- Variáveis e Reset --- */
+/* ==========================================================================
+   1. VARIÁVEIS E RESET
+   ========================================================================== */
 :root {
+    /* Paleta de Cores */
     --color-red: #9A2A2A;
     --color-brown: #3E2723;
     --color-cream: #FFF8E7;
@@ -9,9 +12,11 @@
     --color-light-gray: #e7e5e4;
     --color-green: #16a34a;
     
+    /* Tipografia */
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Lato', sans-serif;
     
+    /* Sombras */
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
@@ -20,7 +25,7 @@
 
 html {
     height: 100%;
-    background-color: var(--color-brown); 
+    background-color: var(--color-brown); /* Esconde o fundo branco no mobile */
     scroll-behavior: smooth;
 }
 
@@ -49,13 +54,17 @@ a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
 button { cursor: pointer; border: none; font-family: inherit; }
 
-/* --- Utilitários --- */
+/* ==========================================================================
+   2. UTILITÁRIOS GERAIS
+   ========================================================================== */
 .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
 .hidden { display: none !important; }
 .section { padding: 4rem 0; }
 .text-center { text-align: center; }
 
-/* --- Navbar --- */
+/* ==========================================================================
+   3. NAVBAR
+   ========================================================================== */
 .navbar {
     background-color: var(--color-red);
     color: var(--color-cream);
@@ -73,13 +82,21 @@ button { cursor: pointer; border: none; font-family: inherit; }
     height: 4rem;
 }
 
+.nav-logo {
+    height: 3.5rem;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.nav-logo:hover { transform: scale(1.05); }
+
 .nav-links { display: none; gap: 2rem; }
 .nav-links a { font-weight: bold; }
 .nav-links a:hover, .nav-links a.active { color: var(--color-yellow); }
 
 .nav-actions { display: flex; align-items: center; gap: 1rem; }
-
-/* Botão de WhatsApp REMOVIDO */
 
 .cart-btn {
     position: relative;
@@ -106,11 +123,6 @@ button { cursor: pointer; border: none; font-family: inherit; }
 
 .mobile-menu-btn { background: none; color: white; }
 
-@media (min-width: 768px) {
-    .nav-links { display: flex; }
-    .mobile-menu-btn { display: none; }
-}
-
 .mobile-menu {
     background-color: var(--color-brown);
     padding: 1rem;
@@ -118,7 +130,14 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 .mobile-menu a { display: block; padding: 0.75rem 0; color: white; font-weight: bold; }
 
-/* --- Hero & Parallax --- */
+@media (min-width: 768px) {
+    .nav-links { display: flex; }
+    .mobile-menu-btn { display: none; }
+}
+
+/* ==========================================================================
+   4. HERO & PARALLAX
+   ========================================================================== */
 .hero {
     position: relative;
     height: 80vh;
@@ -155,10 +174,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
     z-index: 1;
 }
 
-.hero-content {
-    position: relative;
-    z-index: 2;
-}
+.hero-content { position: relative; z-index: 2; }
 
 .badge {
     display: inline-block;
@@ -194,7 +210,9 @@ button { cursor: pointer; border: none; font-family: inherit; }
     .hero-buttons { flex-direction: row; }
 }
 
-/* --- Botões --- */
+/* ==========================================================================
+   5. BOTÕES GERAIS
+   ========================================================================== */
 .btn {
     padding: 1rem 2rem;
     border-radius: 9999px;
@@ -204,21 +222,14 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 .btn:hover { transform: scale(1.05); }
 
-.btn-primary {
-    background-color: var(--color-cream);
-    color: var(--color-brown);
-}
-.btn-outline {
-    background-color: var(--color-red);
-    color: white;
-}
-.btn-success {
-    background-color: var(--color-green);
-    color: white;
-}
+.btn-primary { background-color: var(--color-cream); color: var(--color-brown); }
+.btn-outline { background-color: var(--color-red); color: white; }
+.btn-success { background-color: var(--color-green); color: white; }
 .full-width { width: 100%; display: flex; justify-content: center; gap: 0.5rem; }
 
-/* --- Grids de Produtos --- */
+/* ==========================================================================
+   6. GRID DE PRODUTOS & CARDS
+   ========================================================================== */
 .section-header { text-align: center; margin-bottom: 3rem; }
 .section-header h2 { font-size: 2rem; color: var(--color-brown); margin-bottom: 0.5rem; }
 .section-header p { color: var(--color-gray); }
@@ -229,7 +240,6 @@ button { cursor: pointer; border: none; font-family: inherit; }
     gap: 2rem;
 }
 
-/* --- Card de Produto --- */
 .product-card {
     background: white;
     border-radius: 1rem;
@@ -268,6 +278,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
     margin-top: auto;
 }
 .card-price { font-size: 1.25rem; font-weight: bold; color: var(--color-red); }
+
 .btn-add {
     background-color: var(--color-red);
     color: white;
@@ -281,9 +292,12 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 .btn-add:hover { background-color: var(--color-brown); }
 
-/* --- Menu Page Controls --- */
+/* ==========================================================================
+   7. CONTROLES DO MENU (Busca e Filtros)
+   ========================================================================== */
 .menu-controls { margin-bottom: 3rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; }
 .categories { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+
 .cat-btn {
     padding: 0.5rem 1rem;
     border-radius: 9999px;
@@ -309,104 +323,9 @@ button { cursor: pointer; border: none; font-family: inherit; }
 .search-box input:focus { border-color: var(--color-red); ring: 2px solid var(--color-red); }
 .search-icon { position: absolute; left: 12px; top: 12px; width: 20px; color: #9ca3af; }
 
-/* --- Sidebar Carrinho --- */
-/* --- Formulário do Carrinho (Atualizado) --- */
-.cart-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-.form-row {
-    display: flex;
-    gap: 1rem;
-}
-.form-row .form-group {
-    flex: 1;
-}
-/* Grupo especial para o CEP e Botão de Localização */
-.input-with-action {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.input-with-action input {
-    flex: 1;
-    /* Remove margem inferior padrão se houver, pois estamos usando gap no container */
-    margin-bottom: 0 !important; 
-}
-
-.input-with-status {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-with-status input {
-    padding-right: 3rem; /* Espaço para o ícone não ficar em cima do texto */
-    margin-bottom: 0 !important;
-}
-
-/* O indicador visual ao lado do CEP */
-.status-badge {
-    position: absolute;
-    right: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-gray);
-    pointer-events: none; /* Não é clicável, só visual */
-    width: 2rem;
-    height: 2rem;
-}
-
-.status-badge.success {
-    color: var(--color-green);
-}
-
-.status-badge.error {
-    color: var(--color-red);
-}
-
-/* Animação de rotação para o loading */
-.spin-animate {
-    animation: spin 1s linear infinite;
-}
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* Botão de Localização Grande (Full Width) */
-.btn-location-full {
-    width: 100%;
-    background-color: #e7e5e4; /* Cinza claro */
-    color: var(--color-brown);
-    border: 1px solid #d6d3d1;
-    border-radius: 0.375rem;
-    padding: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-weight: bold;
-    font-size: 0.95rem;
-    transition: 0.2s;
-    cursor: pointer;
-    margin-top: 0.2rem;
-}
-
-.btn-location-full:hover {
-    background-color: var(--color-yellow);
-    border-color: var(--color-yellow);
-    color: var(--color-brown);
-}
-
-.btn-location-full.loading {
-    opacity: 0.7;
-    cursor: wait;
-}
+/* ==========================================================================
+   8. SIDEBAR CARRINHO (Layout Principal)
+   ========================================================================== */
 .cart-sidebar { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
 .cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
 
@@ -423,6 +342,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
+/* Cabeçalho Fixo do Carrinho */
 .cart-header {
     background: var(--color-red);
     color: white;
@@ -430,117 +350,176 @@ button { cursor: pointer; border: none; font-family: inherit; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0; /* Não encolhe */
+    flex-shrink: 0;
 }
 .close-cart { background: none; color: white; }
 
-/* Nova Área de Rolagem Unificada (Itens + Formulário) */
+/* Wrapper de Rolagem (Itens + Formulário) */
 .cart-scroll-wrapper {
-    flex: 1; /* Ocupa todo o espaço disponível */
-    overflow-y: auto; /* Permite rolar */
+    flex: 1;
+    overflow-y: auto;
     overflow-x: hidden;
     background-color: #f5f5f4;
     display: flex;
     flex-direction: column;
 }
 
-/* Títulos de Seção (Detalhes, Entrega, Pagamento) */
-.cart-section-title {
-    font-size: 1rem;
-    font-weight: bold;
-    color: var(--color-brown);
-    padding: 0 1.5rem;
-    margin-bottom: 0.5rem;
+/* ==========================================================================
+   9. ITENS DO CARRINHO (Visual Renovado)
+   ========================================================================== */
+.cart-items {
+    padding: 0 1.5rem 1rem 1.5rem;
     display: flex;
-    align-items: center;
-    justify-content: space-between; /* Para o ícone de check ficar na direita */
+    flex-direction: column;
+    gap: 1rem;
 }
 
-/* Ícone de Check (Dados da Entrega) */
-.completion-icon {
-    color: #ccc; /* Cinza quando incompleto */
-    transition: color 0.3s, transform 0.3s;
-}
-.completion-icon.completed {
-    color: var(--color-green);
-    transform: scale(1.1);
-}
-
-/* Barra de Separação */
-.cart-divider {
-    height: 1px;
-    background-color: #e7e5e4;
-    margin: 1.5rem 0;
-}
-
-/* --- Layout do Item com Imagem --- */
 .cart-item {
     background: white;
     padding: 0.8rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra suave */
+    border: 1px solid #f0f0f0;
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
     align-items: flex-start;
+    transition: transform 0.2s;
+}
+
+.cart-item:hover {
+    border-color: #e7e5e4;
+    transform: translateY(-1px);
 }
 
 .cart-item-img {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     object-fit: cover;
-    border-radius: 0.3rem;
+    border-radius: 0.5rem;
     flex-shrink: 0;
+    border: 1px solid #f5f5f4;
 }
 
 .cart-item-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    justify-content: space-between;
+    gap: 0.4rem;
+    min-width: 0;
 }
 
-.cart-item-header { 
-    display: flex; 
-    justify-content: space-between; 
-    font-weight: bold; 
+.cart-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.item-name {
+    font-weight: 700;
     font-size: 0.95rem;
     line-height: 1.2;
+    color: var(--color-brown);
 }
 
-.cart-item-controls { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-top: 0.5rem; 
+.item-price {
+    font-weight: 800;
+    color: var(--color-red);
+    white-space: nowrap;
+    font-size: 0.95rem;
 }
 
-/* Ajustes finos */
-.cart-items { padding: 0.5rem 1.5rem 1.5rem 1.5rem; }
-.cart-form-section { padding: 0 1.5rem 1.5rem 1.5rem; background: transparent; border: none; margin: 0; }
-
-/* Rodapé Fixo (Apenas Total e Botão) */
-.cart-sticky-footer {
-    padding: 1.5rem;
-    background: white;
-    border-top: 1px solid #e7e5e4;
-    flex-shrink: 0; /* Não encolhe */
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+/* Input de Observação */
+.obs-input {
+    width: 100%;
+    background-color: #fafaf9;
+    border: 1px solid #e7e5e4;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 0.4rem;
+    color: var(--color-gray);
+    transition: border-color 0.2s;
 }
 
+.obs-input:focus {
+    background-color: white;
+    border-color: var(--color-yellow);
+    outline: none;
+}
 
-/* Estilos dos Itens e Inputs continuam os mesmos... */
-.cart-item {
-    background: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+/* Controles de Quantidade */
+.cart-item-footer {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}/* Container dos Itens */
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.2rem;
+}
 
+.qty-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f4;
+    border-radius: 9999px;
+    padding: 2px;
+    border: 1px solid #e7e5e4;
+}
 
-/* Container do Formulário (dentro da rolagem) */
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #e7e5e4;
+    font-weight: bold;
+    color: var(--color-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.qty-btn:hover {
+    background-color: var(--color-red);
+    color: white;
+    border-color: var(--color-red);
+}
+
+.qty-val {
+    margin: 0 0.8rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    min-width: 1rem;
+    text-align: center;
+}
+
+/* Botão Remover */
+.remove-btn {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.3rem;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.remove-btn:hover {
+    color: var(--color-red);
+    background-color: rgba(255, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   10. FORMULÁRIO DO CARRINHO (Estrutura e Inputs)
+   ========================================================================== */
 .cart-form-section {
     padding: 0 1.5rem 1.5rem 1.5rem;
     background-color: #f5f5f4;
@@ -549,41 +528,47 @@ button { cursor: pointer; border: none; font-family: inherit; }
     padding-top: 1.5rem;
 }
 
-/* Rodapé Fixo (Apenas Total e Botão) */
-.cart-sticky-footer {
-    padding: 1.5rem;
-    background: white;
-    border-top: 1px solid #e7e5e4;
-    flex-shrink: 0; /* Não encolhe */
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+.cart-section-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-brown);
+    padding: 0 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-/* Estilos dos Itens e Inputs continuam os mesmos... */
-.cart-item {
-    background: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+.cart-divider {
+    height: 1px;
+    background-color: #e7e5e4;
+    margin: 1.5rem 0;
+}
+
+.completion-icon {
+    color: #ccc;
+    transition: color 0.3s, transform 0.3s;
+}
+.completion-icon.completed {
+    color: var(--color-green);
+    transform: scale(1.1);
+}
+
+.cart-form {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-}
-.cart-item-header { display: flex; justify-content: space-between; font-weight: bold; }
-.cart-item-controls { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e7e5e4; padding-top: 0.5rem; }
-.qty-btn { background: #e7e5e4; width: 24px; height: 24px; border-radius: 4px; font-weight: bold; }
-.qty-val { margin: 0 10px; font-weight: bold; }
-.remove-btn { color: red; font-size: 0.75rem; text-transform: uppercase; font-weight: bold; }
-.obs-input {
-    width: 100%;
-    border: 1px solid #e7e5e4;
-    padding: 0.4rem;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    background: #fafaf9;
+    gap: 1rem;
 }
 
-.cart-footer { padding: 1.5rem; border-top: 1px solid #e7e5e4; background: white; }
-/* Ajuste nos inputs para ficarem uniformes */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.form-row { display: flex; gap: 1rem; }
+.form-row .form-group { flex: 1; }
+
 .cart-form input, 
 .cart-form select, 
 .cart-form textarea {
@@ -593,7 +578,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
     border-radius: 0.375rem;
     font-family: inherit;
     font-size: 0.9rem;
-    margin-bottom: 0; /* Controlado pelo gap do form-group */
+    margin-bottom: 0;
 }
 
 .cart-form input:focus, 
@@ -603,12 +588,64 @@ button { cursor: pointer; border: none; font-family: inherit; }
     box-shadow: 0 0 0 2px rgba(154, 42, 42, 0.1);
 }
 
-/* Campo somente leitura (Rua/Bairro preenchidos automaticamente) */
 .input-readonly {
     background-color: #f5f5f4;
     color: #78716c;
     cursor: not-allowed;
 }
+
+/* Inputs Especiais (CEP com status) */
+.input-with-status {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.input-with-status input {
+    padding-right: 3rem;
+    margin-bottom: 0 !important;
+}
+
+.status-badge {
+    position: absolute;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray);
+    pointer-events: none;
+    width: 2rem;
+    height: 2rem;
+}
+.status-badge.success { color: var(--color-green); }
+.status-badge.error { color: var(--color-red); }
+
+.spin-animate { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Botão de Localização Grande */
+.btn-location-full {
+    width: 100%;
+    background-color: #e7e5e4;
+    color: var(--color-brown);
+    border: 1px solid #d6d3d1;
+    border-radius: 0.375rem;
+    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: 0.2s;
+    cursor: pointer;
+    margin-top: 0.2rem;
+}
+.btn-location-full:hover {
+    background-color: var(--color-yellow);
+    border-color: var(--color-yellow);
+    color: var(--color-brown);
+}
+.btn-location-full.loading { opacity: 0.7; cursor: wait; }
 
 .location-success {
     color: var(--color-green);
@@ -618,25 +655,28 @@ button { cursor: pointer; border: none; font-family: inherit; }
     gap: 0.3rem;
     margin-top: 0.2rem;
 }
-.cart-total-row { display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: var(--color-red); }
 
-/* --- Contato e Footer --- */
-.contact-grid { display: grid; md:grid-cols-2; gap: 2rem; }
-.contact-card { background: white; padding: 2rem; border-radius: 1rem; border: 1px solid var(--color-light-gray); }
-.contact-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-.icon-brand { color: var(--color-red); }
-.map-placeholder {
-    background: #e7e5e4;
-    height: 300px;
-    border-radius: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-gray);
+/* Rodapé Fixo do Carrinho (Total) */
+.cart-sticky-footer {
+    padding: 1.5rem;
+    background: white;
+    border-top: 1px solid #e7e5e4;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
 }
 
-/* --- Footer --- */
+.cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--color-red);
+}
+
+/* ==========================================================================
+   11. FOOTER (Página Principal)
+   ========================================================================== */
 footer {
     background-color: var(--color-brown);
     color: var(--color-cream);
@@ -675,126 +715,6 @@ footer {
     color: #e7e5e4;
 }
 
-/* --- Seção de Pagamento --- */
-.payment-section {
-    margin-top: 1rem;
-    width: 100%;
-}
-
-.payment-title {
-    font-weight: bold;
-    color: var(--color-yellow) !important;
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.payment-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.tag {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--color-cream);
-}
-
-.tag:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-links li {
-    margin-bottom: 0.8rem;
-}
-
-.footer-links a {
-    text-decoration: none;
-    color: #e7e5e4;
-    transition: all 0.2s;
-    display: inline-block;
-}
-
-.footer-links a:hover {
-    color: var(--color-yellow);
-    transform: translateX(5px);
-}
-
-.contact-list {
-    list-style: none;
-    padding: 0;
-}
-
-.contact-list li {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    align-items: flex-start;
-}
-
-.footer-icon {
-    color: var(--color-yellow);
-    min-width: 20px;
-    margin-top: 4px;
-}
-
-.contact-list strong {
-    display: block;
-    color: white;
-    margin-bottom: 0.2rem;
-}
-
-.contact-list .note {
-    display: block;
-    font-size: 0.8rem;
-    opacity: 0.6;
-    margin-top: 0.2rem;
-    font-style: italic;
-}
-
-.footer-copyright {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 2rem;
-    text-align: center;
-}
-
-.highlight-note {
-    color: var(--color-yellow) !important;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-}
-
-.footer-copyright p:last-child {
-    font-size: 0.85rem;
-    opacity: 0.5;
-}
-
-/* --- Estilos do Logo --- */
-
-.nav-logo {
-    height: 3.5rem;
-    width: auto;
-    object-fit: contain;
-    transition: transform 0.3s;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-
-.nav-logo:hover {
-    transform: scale(1.05);
-}
-
 .footer-logo {
     height: 6rem;
     width: auto;
@@ -804,62 +724,58 @@ footer {
     margin-bottom: 1rem;
     display: block;
 }
+.footer-logo:hover { opacity: 0.9; }
 
-.footer-logo:hover {
-    opacity: 0.9;
+/* Redes Sociais e Pagamento */
+.social-links { display: flex; gap: 1rem; }
+.social-links a { color: var(--color-cream); transition: color 0.2s; }
+.social-links a:hover { color: var(--color-yellow); }
+
+.payment-section { margin-top: 1rem; width: 100%; }
+.payment-title {
+    font-weight: bold;
+    color: var(--color-yellow) !important;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.brand-col {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.brand-desc {
-    font-size: 0.9rem;
-    color: rgba(255, 248, 231, 0.7);
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-}
-
-.social-links {
-    display: flex;
-    gap: 1rem;
-}
-
-.social-links a {
+.payment-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.tag {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-cream);
-    transition: color 0.2s;
 }
+.tag:hover { background-color: rgba(255, 255, 255, 0.2); }
 
-.social-links a:hover {
-    color: var(--color-yellow);
-}
+/* Links e Contato */
+.footer-links { list-style: none; padding: 0; }
+.footer-links li { margin-bottom: 0.8rem; }
+.footer-links a { text-decoration: none; color: #e7e5e4; transition: all 0.2s; display: inline-block; }
+.footer-links a:hover { color: var(--color-yellow); transform: translateX(5px); }
+
+.contact-list { list-style: none; padding: 0; }
+.contact-list li { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; }
+.footer-icon { color: var(--color-yellow); min-width: 20px; margin-top: 4px; }
+.contact-list strong { display: block; color: white; margin-bottom: 0.2rem; }
+.contact-list .note { display: block; font-size: 0.8rem; opacity: 0.6; margin-top: 0.2rem; font-style: italic; }
 
 .footer-bottom {
     border-top: 1px solid rgba(255, 248, 231, 0.1);
     padding-top: 1.5rem;
     margin-top: 1.5rem;
 }
+.adicionais-note { font-size: 0.8rem; color: rgba(255, 248, 231, 0.5); margin-bottom: 0.5rem; }
+.copyright { font-size: 0.8rem; color: rgba(255, 248, 231, 0.5); }
 
-.adicionais-note {
-    font-size: 0.8rem;
-    color: rgba(255, 248, 231, 0.5);
-    margin-bottom: 0.5rem;
-}
-
-.copyright {
-    font-size: 0.8rem;
-    color: rgba(255, 248, 231, 0.5);
-}
-
-.contact-text {
-    display: block;
-    color: var(--color-cream);
-    font-weight: bold;
-}
-
-/* --- Modal Pizza do Dia --- */
+/* ==========================================================================
+   12. MODAIS (Pizza do Dia & Mapa)
+   ========================================================================== */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -872,7 +788,6 @@ footer {
     backdrop-filter: blur(4px);
     animation: fadeIn 0.2s ease-out;
 }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
@@ -885,7 +800,6 @@ footer {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     animation: scaleUp 0.3s ease-out;
 }
-
 @keyframes scaleUp { from { transform: scale(0.9); } to { transform: scale(1); } }
 
 .close-modal {
@@ -914,16 +828,16 @@ footer {
 .modal-header h3 { display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.5rem; }
 .price-highlight { color: var(--color-yellow); font-weight: bold; font-size: 1.2rem; }
 
-/* Barra dos Dias */
+/* Barra dos Dias (Promo) */
 .week-days-bar {
     display: flex;
     gap: 0.5rem;
     padding: 1rem;
     overflow-x: auto;
     background-color: #f5f5f4;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
 }
-.week-days-bar::-webkit-scrollbar { display: none; /* Chrome */ }
+.week-days-bar::-webkit-scrollbar { display: none; }
 
 .day-btn {
     flex: 0 0 auto;
@@ -947,7 +861,6 @@ footer {
 }
 .day-btn span { display: block; font-size: 0.7rem; opacity: 0.8; font-weight: normal; }
 
-/* Display da Pizza Selecionada */
 .promo-pizza-display { padding: 1.5rem; text-align: center; }
 .promo-img { 
     width: 100%; 
@@ -960,73 +873,7 @@ footer {
 .promo-title { font-family: var(--font-serif); font-size: 1.5rem; color: var(--color-brown); margin-bottom: 0.5rem; }
 .promo-desc { color: var(--color-gray); margin-bottom: 1.5rem; font-size: 0.9rem; }
 
-/* --- Estilos do Mapa Manual --- */
-.map-modal-content {
-    max-width: 600px;
-    height: 80vh; /* Ocupa 80% da altura da tela */
-    display: flex;
-    flex-direction: column;
-}
-
-#map-container {
-    flex: 1; /* O mapa ocupa o espaço restante */
-    width: 100%;
-    background: #e7e5e4;
-    position: relative;
-    z-index: 1;
-}
-
-.map-footer {
-    padding: 1rem;
-    background: white;
-    border-top: 1px solid #e7e5e4;
-}
-
-.warning-text {
-    background-color: #fffbeb; /* Amarelo claro */
-    color: #92400e;
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-    border: 1px solid #fcd34d;
-}
-
-/* Novos botões de localização lado a lado */
-.location-buttons-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    margin-top: 0.2rem;
-}
-
-.btn-location-action {
-    background-color: #e7e5e4;
-    color: var(--color-brown);
-    border: 1px solid #d6d3d1;
-    border-radius: 0.375rem;
-    padding: 0.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    font-weight: bold;
-    font-size: 0.85rem;
-    transition: 0.2s;
-    cursor: pointer;
-}
-
-.btn-location-action:hover {
-    background-color: var(--color-yellow);
-    border-color: var(--color-yellow);
-}
-
-.btn-location-action.loading {
-    opacity: 0.7;
-    cursor: wait;
-}
-
-/* --- Mapa Manual (Estilo iFood) --- */
+/* Estilos do Mapa Manual (Pino Fixo) */
 .map-modal-content {
     max-width: 600px;
     height: 80vh;
@@ -1048,6 +895,22 @@ footer {
     z-index: 1;
 }
 
+.map-footer {
+    padding: 1rem;
+    background: white;
+    border-top: 1px solid #e7e5e4;
+}
+
+.warning-text {
+    background-color: #fffbeb;
+    color: #92400e;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    border: 1px solid #fcd34d;
+}
+
 .center-pin {
     position: absolute;
     top: 50%;
@@ -1061,7 +924,6 @@ footer {
     transition: transform 0.2s ease-out;
 }
 
-/* Animação do pino "pulando" quando move */
 .map-moving {
     transform: translate(-50%, -120%) scale(1.1);
 }
@@ -1085,17 +947,3 @@ footer {
     opacity: 0.5;
     transform: scale(0.8);
 }
-
-.warning-text {
-    background-color: #fffbeb;
-    color: #92400e;
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-    border: 1px solid #fcd34d;
-}
-
-/* Ajuste no z-index para o mapa Leaflet não ficar por cima de modais errados */
-.leaflet-pane { z-index: 400 !important; }
-.leaflet-top, .leaflet-bottom { z-index: 500 !important; }

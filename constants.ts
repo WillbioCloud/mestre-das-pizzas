@@ -11,7 +11,7 @@ export const MENU_ITEMS: Product[] = [
     description: '2 pizzas grandes de sal + 1 refrigerante de 2 litros (Coca-Cola, Fanta ou Guaraná Antárctica).',
     price: 99.00,
     category: 'combos',
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80',
+    image: 'https://img.freepik.com/fotos-gratis/aproximar-se-da-deliciosa-pizza_23-2150852113.jpg?t=st=1769207380~exp=1769210980~hmac=fd4c858114b1a58f42d56577780f977102c16eb4f9fade2aa0a548eee7d8ee0b',
     isPromo: true
   },
   {
@@ -20,7 +20,7 @@ export const MENU_ITEMS: Product[] = [
     description: '1 pizza grande de sal + 1 pizza grande doce + 1 refrigerante de 2 litros.',
     price: 91.00,
     category: 'combos',
-    image: 'https://images.unsplash.com/photo-1574126154517-d1e0d89e7344?w=500&q=80',
+    image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769207797/Gemini_Generated_Image_33hyd933hyd933hy_xa9lsy.png',
     isPromo: true
   },
   {

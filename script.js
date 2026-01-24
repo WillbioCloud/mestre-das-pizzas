@@ -23,7 +23,7 @@ const MENU_ITEMS = [
       description: '2 pizzas grandes de sal + 1 refrigerante de 2 litros (Coca-Cola, Fanta ou Guaraná Antárctica).',
       price: 99.00,
       category: 'combos',
-      image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80',
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769208962/Gemini_Generated_Image_o1yivo1yivo1yivo_whdw4k.png',
       isPromo: true
     },
     {
@@ -32,7 +32,7 @@ const MENU_ITEMS = [
       description: '1 pizza grande de sal + 1 pizza grande doce + 1 refrigerante de 2 litros (Coca-Cola, Fanta ou Guaraná Antárctica).',
       price: 91.00,
       category: 'combos',
-      image: 'https://images.unsplash.com/photo-1574126154517-d1e0d89e7344?w=500&q=80',
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769207797/Gemini_Generated_Image_33hyd933hyd933hy_xa9lsy.png',
       isPromo: true
     },
     {
@@ -60,7 +60,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, queijo mussarela, azeitona e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=500&q=80'
+      image: 'https://img.freepik.com/fotos-gratis/aproximar-se-da-deliciosa-pizza_23-2150852113.jpg?t=st=1769207380~exp=1769210980~hmac=fd4c858114b1a58f42d56577780f977102c16eb4f9fade2aa0a548eee7d8ee0bhttps://res.cloudinary.com/dxplpg36m/image/upload/v1769208962/Gemini_Generated_Image_o1yivo1yivo1yivo_whdw4k.png'
     },
     {
       id: 'frango-cheddar',
@@ -68,7 +68,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, frango desfiado temperado, queijo cheddar, queijo mussarela, azeitona e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769213019/Pizza_Frango_com_Cheddar_snce0i.png'
     },
     {
       id: 'frango-catupiry',
@@ -76,7 +76,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, frango desfiado temperado, catupiry, queijo mussarela, cebola, azeitona e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769212707/Pizza_Frango_com_Catupiry_ccpt5j.png'
     },
     {
       id: 'frango-bacon',
@@ -84,7 +84,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, frango desfiado temperado, queijo mussarela, bacon, azeitona e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769212837/Pizza_Frango_com_Bacon_vcyta7.png'
     },
     {
       id: 'portuguesa',
@@ -92,7 +92,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, presunto, queijo mussarela, ovo cozido, pimentão, cebola, azeitona e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769212610/Pizza_Portuguesa_ypkxsx.png'
     },
     {
       id: 'quatro-queijos',
@@ -100,7 +100,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, queijo mussarela, catupiry, cheddar, parmesão e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1573821663912-569905455b1c?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769212223/Pizza_Quatro_Queijos_tx9ory.png'
     },
     {
       id: 'bacon',
@@ -108,7 +108,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, bacon crocante, queijo mussarela, presunto, calabresa, tomate e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769212029/Pizza_de_Bacon_ezn5vt.png'
     },
     {
       id: 'moda-casa',
@@ -116,7 +116,7 @@ const MENU_ITEMS = [
       description: 'Molho de tomate, queijo mussarela, presunto, calabresa, tomate, azeitona e orégano.',
       price: 46.99,
       category: 'tradicionais',
-      image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769212299/Pizza_Moda_da_casa_jcyma8.png'
     },
 
     // --- PIZZAS DOCES (R$ 36,99) ---
@@ -126,7 +126,7 @@ const MENU_ITEMS = [
       description: 'Massa, chocolate ao leite, queijo mussarela, banana (canela opcional).',
       price: 36.99,
       category: 'doces',
-      image: 'https://images.unsplash.com/photo-1605627244243-228db40e7401?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769209956/Gemini_Generated_Image_5smb305smb305smb_po596f.webp'
     },
     {
       id: 'chocolate-morango',
@@ -134,7 +134,7 @@ const MENU_ITEMS = [
       description: 'Massa, queijo mussarela, chocolate e morango.',
       price: 36.99,
       category: 'doces',
-      image: 'https://images.unsplash.com/photo-1617343251257-b5b7095f68b6?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769210725/Gemini_Generated_Image_qs6fpvqs6fpvqs6f_sucv17.png'
     },
 
     // --- BEBIDAS ---
@@ -160,7 +160,7 @@ const MENU_ITEMS = [
       description: 'Garrafa 2 Litros',
       price: 12.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&q=80'
+      image: 'https://carrefourbrfood.vtexassets.com/arquivos/ids/118271106/refrigerante-coca-cola-garrafa-2-l-1.jpg?v=638217385053270000'
     },
     {
       id: 'coca-zero-2l',
@@ -168,7 +168,7 @@ const MENU_ITEMS = [
       description: 'Garrafa 2 Litros',
       price: 12.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&q=80'
+      image: 'https://fortatacadista.vteximg.com.br/arquivos/ids/293843-1000-1000/7894900701517.jpg?v=637617987089330000'
     },
     {
       id: 'fanta-2l',
@@ -176,7 +176,7 @@ const MENU_ITEMS = [
       description: 'Garrafa 2 Litros',
       price: 12.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=500&q=80'
+      image: 'https://superandreazza.com.br/wp-content/uploads/2022/10/fanta-optimized.jpg'
     },
     {
       id: 'guarana-2l',
@@ -184,7 +184,7 @@ const MENU_ITEMS = [
       description: 'Garrafa 2 Litros',
       price: 12.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1582106245687-cbb6409d5667?w=500&q=80'
+      image: 'https://carrefourbrfood.vtexassets.com/arquivos/ids/106437065/refrigerante-guarana-antarctica-garrafa-2l-2.jpg?v=638144885948670000'
     },
     {
       id: 'mineiro-2l',
@@ -192,7 +192,7 @@ const MENU_ITEMS = [
       description: 'Refrigerante Mineiro 2 Litros',
       price: 9.50,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1582106245687-cbb6409d5667?w=500&q=80'
+      image: 'https://www.bernardaoemcasa.com.br/media/catalog/product/cache/1/image/500x500/9df78eab33525d08d6e5fb8d27136e95/w/h/whatsapp_image_2020-07-17_at_09.41.20.jpeg'
     },
     {
       id: 'suco-delvale',
@@ -200,7 +200,7 @@ const MENU_ITEMS = [
       description: 'Garrafa 1,5 Litros',
       price: 10.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1769211324/Gemini_Generated_Image_qdi2ejqdi2ejqdi2_eagrw2.png'
     },
     {
       id: 'coca-lata',
@@ -224,7 +224,7 @@ const MENU_ITEMS = [
       description: '350ml',
       price: 5.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1582106245687-cbb6409d5667?w=500&q=80'
+      image: 'https://img.megaboxatacado.com.br/produto/1000X1000/202039_10951.jpg'
     },
 ];
 
@@ -709,7 +709,7 @@ const app = {
         lucide.createIcons();
     },
 
-    // --- Update Cart UI (Atualizado com Imagem e Layout) ---
+    // --- Update Cart UI (Visual Melhorado) ---
     updateCartUI: function() {
         const container = document.getElementById('cart-items');
         const badge = document.getElementById('cart-count');
@@ -717,9 +717,6 @@ const app = {
         const formArea = document.getElementById('cart-form-area');
         const checkoutArea = document.getElementById('cart-checkout-area');
         
-        // Controle de visibilidade do Título "Detalhes do Pedido"
-        const itemsWrapper = document.getElementById('cart-items-wrapper');
-
         const totalItems = this.cart.reduce((acc, item) => acc + item.quantity, 0);
         badge.innerText = totalItems;
         badge.classList.toggle('hidden', totalItems === 0);
@@ -728,7 +725,6 @@ const app = {
             container.innerHTML = '<div class="empty-cart-msg">Sua bandeja está vazia.</div>';
             formArea.classList.add('hidden');
             checkoutArea.classList.add('hidden');
-            // Opcional: esconder o título "Detalhes" se vazio, ou manter
             return;
         }
 
@@ -737,7 +733,7 @@ const app = {
 
         let totalValue = 0;
         
-        // Renderiza Itens com Imagem
+        // Renderiza Itens com Layout Organizado
         container.innerHTML = this.cart.map(item => {
             totalValue += item.price * item.quantity;
             return `
@@ -746,19 +742,28 @@ const app = {
                     
                     <div class="cart-item-info">
                         <div class="cart-item-header">
-                            <span>${item.name}</span>
-                            <span class="text-red">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+                            <span class="item-name">${item.name}</span>
+                            <span class="item-price">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
                         </div>
                         
-                        <input type="text" class="obs-input" placeholder="Obs: ex. sem cebola" value="${item.observation}" onchange="app.updateObservation('${item.internalId}', this.value)">
+                        <input 
+                            type="text" 
+                            class="obs-input" 
+                            placeholder="Alguma observação?" 
+                            value="${item.observation}"
+                            onchange="app.updateObservation('${item.internalId}', this.value)"
+                        >
                         
-                        <div class="cart-item-controls">
-                            <div>
+                        <div class="cart-item-footer">
+                            <div class="qty-wrapper">
                                 <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', -1)">-</button>
                                 <span class="qty-val">${item.quantity}</span>
                                 <button class="qty-btn" onclick="app.updateQuantity('${item.internalId}', 1)">+</button>
                             </div>
-                            <button class="remove-btn" onclick="app.removeFromCart('${item.internalId}')">Remover</button>
+                            
+                            <button class="remove-btn" onclick="app.removeFromCart('${item.internalId}')">
+                                <i data-lucide="trash-2" width="14"></i> Remover
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -767,7 +772,6 @@ const app = {
 
         totalEl.innerText = `R$ ${totalValue.toFixed(2).replace('.', ',')}`;
         
-        // Roda a verificação do endereço caso já tenha dados salvos/preenchidos
         this.checkAddressCompletion();
         lucide.createIcons();
     },
