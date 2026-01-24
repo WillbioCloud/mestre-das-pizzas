@@ -948,3 +948,7 @@ const app = {
 document.addEventListener('DOMContentLoaded', () => {
     app.init();
 });
+
+// --- CORREÇÃO PARA O VITE/VERCEL ---
+// Isso garante que o objeto 'app' seja acessível pelo HTML (onclick)
+window.app = app;
