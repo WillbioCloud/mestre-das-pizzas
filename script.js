@@ -243,7 +243,7 @@ const MENU_ITEMS = [
     },
 ];
 
-const WHATSAPP_NUMBER = "5564999232217"; // Substitua pelo seu número real
+const WHATSAPP_NUMBER = "5564993182960"; // Substitua pelo seu número real
 
 /* ==========================================================================
    APLICAÇÃO PRINCIPAL
