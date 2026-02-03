@@ -152,6 +152,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
 .hero {
     position: relative;
     height: 100vh;
+    height: 100dvh;
     min-height: 500px;
     display: flex;
     align-items: center;
@@ -336,7 +337,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: bold;
 }
 .btn-add:hover { background-color: var(--color-brown); }

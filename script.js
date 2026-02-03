@@ -239,7 +239,7 @@ const MENU_ITEMS = [
       description: '500ml',
       price: 3.00,
       category: 'bebidas',
-      image: 'https://images.unsplash.com/photo-1564414277413-5804291a3294?w=500&q=80'
+      image: 'https://res.cloudinary.com/dxplpg36m/image/upload/v1770088318/9640312_1_z6kdos.webp'
     },
 ];
 
